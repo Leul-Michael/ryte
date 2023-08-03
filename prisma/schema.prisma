@@ -70,11 +70,11 @@ model Story {
   content String
   slug    String @unique
 
-  userId  String
-  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tags    Tag[]
-  likes   Like[]
-  Comment Comment[]
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags     Tag[]
+  likes    Like[]
+  comments Comment[]
 
   updated_at DateTime @updatedAt
   created_at DateTime @default(now())

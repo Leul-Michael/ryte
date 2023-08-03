@@ -31,7 +31,7 @@ export async function saveStory({
   let i = 0
 
   while (true) {
-    const checkSlug = await prisma.story.findUnique({
+    const checkSlug = await prisma.story.findFirst({
       where: {
         slug,
       },
