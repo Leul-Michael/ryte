@@ -2,6 +2,18 @@ import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
+import StoryTags from "@/components/story-tags"
+import prisma from "@/lib/prisma"
+
+// async function getMyTags() {
+//   const session = await auth()
+
+//   const tags = prisma.tag.findMany({
+//     where: {
+
+//     }
+//   })
+// }
 
 export default async function Home() {
   const session = await auth()
@@ -14,8 +26,14 @@ export default async function Home() {
 
 const Authed = () => {
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex items-center gap-4 flex-wrap"></div>
+    <div className="w-full h-full flex flex-col flex-1 py-12 gap-8">
+      <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
+        Explore Stories
+      </h1>
+      <p className="text-xl max-w-[500px] text-muted-foreground">
+        Discover topics, thinking, and expertise from writers on any topic.
+      </p>
+      <StoryTags />
     </div>
   )
 }

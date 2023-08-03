@@ -1,6 +1,5 @@
 import { Tag } from "../../../types"
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useState, useTransition } from "react"
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -28,56 +27,59 @@ import {
 } from "@/store/zustand"
 import { redirect } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import { experimental_useFormStatus as useFormStatus } from "react-dom"
 import * as DOMPurify from "dompurify"
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 
 interface SelectTagsProps {
   tags: Tag[]
-  openDialog: boolean
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  showModal: boolean
+  setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
-export function SelectTags({
-  tags,
-  openDialog,
-  setOpenDialog,
-}: SelectTagsProps) {
+export function SelectTags({ tags, showModal, setShowModal }: SelectTagsProps) {
   const { toast } = useToast()
+  let [pending, startTransition] = useTransition()
+
   const title = useTitle()
   const content = useContent()
   const setTitle = useSetTitle()
   const setContent = useSetContent()
   const [open, setOpen] = useState(false)
   const [values, setValues] = useState<string[]>([])
-  const { pending } = useFormStatus()
+
+  const createStory = async () => {
+    if (!title || !content) {
+      toast({
+        title: "Please add required fields!",
+        variant: "destructive",
+      })
+    }
+    const pureContent = DOMPurify.sanitize(content)
+    startTransition(async () => {
+      const res = await saveStory({
+        title,
+        content: pureContent,
+        tags: values,
+      })
+      toast({
+        title: res?.msg ?? "Operation successfull!",
+      })
+    })
+    setTitle("")
+    setContent("")
+    redirect("/")
+  }
 
   return (
-    <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
+    <Dialog
+      open={showModal}
+      onOpenChange={() => !pending && setShowModal(false)}
+    >
       <DialogContent>
         <DialogHeader>
           <h1 className="text-4xl font-semibold font-serif">Add tags</h1>
         </DialogHeader>
-        <form
-          action={async () => {
-            if (!title || !content) {
-              toast({
-                title: "Please add required fields!",
-                variant: "destructive",
-              })
-            }
-            const pureContent = DOMPurify.sanitize(content)
-            const res = await saveStory({
-              title,
-              content: pureContent,
-              tags: values,
-            })
-            console.log(res)
-            setTitle("")
-            setContent("")
-            redirect("/")
-          }}
-          className="flex flex-col gap-8"
-        >
+        <form action={createStory} className="flex flex-col gap-8">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -149,7 +151,7 @@ export function SelectTags({
             disabled={values.length < 2 || pending}
             className="self-start top-20 px-8 left-0 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
           >
-            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Publish
           </Button>
         </form>

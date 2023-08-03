@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 import { useContent, useSetContent } from "@/store/zustand"
 import { useCallback } from "react"
+import { Skeleton } from "./ui/skeleton"
 
 const Tiptap = () => {
   const content = useContent()
@@ -61,10 +62,14 @@ const Tiptap = () => {
     <div className="tiptap flex flex-col w-full">
       {editor && <FloatingMenuOptions editor={editor} />}
       {editor && <BubbleMenuOptions editor={editor} />}
-      <EditorContent
-        className="w-full flex flex-col gap-4 min-h-[40vh] rounded-sm"
-        editor={editor}
-      />
+      {!editor ? (
+        <Skeleton className="w-full h-[30px] rounded-full my-4" />
+      ) : (
+        <EditorContent
+          className="w-full flex flex-col gap-4 min-h-[40vh] rounded-sm"
+          editor={editor}
+        />
+      )}
     </div>
   )
 }

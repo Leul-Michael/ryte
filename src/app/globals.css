@@ -153,3 +153,30 @@
   height: 0;
   pointer-events: none;
 }
+
+/* Hero Tab List */
+[role="tablist"]::after {
+  content: "";
+  position: absolute;
+  left: 35px;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  scale: var(--_width, 0.125) 1;
+  translate: var(--_left, 0) 0;
+  transform-origin: left;
+  transition: scale 200ms, translate 200ms;
+  background: hsl(var(--accent-green));
+}
+
+[role="tab"] {
+  opacity: 0.75;
+}
+
+[role="tab"]:hover {
+  opacity: 1;
+}
+
+[role="tab"][aria-selected="true"] {
+  opacity: 1;
+}

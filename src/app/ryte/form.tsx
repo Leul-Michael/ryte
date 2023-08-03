@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { useContent, useSetTitle, useTitle } from "@/store/zustand"
 import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
-import { SelectTags } from "./select-tags"
+import { SelectTags } from "./select-tags-form"
 import { Tag } from "../../../types"
 
 interface FormProps {
@@ -41,8 +41,8 @@ const Form = ({ tags }: FormProps) => {
     <>
       <SelectTags
         tags={tags ?? []}
-        openDialog={showTagsModal}
-        setOpenDialog={setShowTagModals}
+        showModal={showTagsModal}
+        setShowModal={setShowTagModals}
       />
       <form onSubmit={continueToAddTags} className="flex flex-col pb-10">
         <Button

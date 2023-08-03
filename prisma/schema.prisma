@@ -53,6 +53,7 @@ model User {
   followers User[]    @relation(name: "Followers")
   follows   User[]    @relation(name: "Followers")
   comments  Comment[]
+  tags      Tag[]
 }
 
 model VerificationToken {
@@ -105,9 +106,10 @@ model Comment {
 model Tag {
   id String @id @default(cuid())
 
-  title   String   @unique
-  ct      String[]
-  stories Story[]
+  title     String   @unique
+  ct        String[]
+  stories   Story[]
+  followers User[]
 
   updated_at DateTime @updatedAt
   created_at DateTime @default(now())

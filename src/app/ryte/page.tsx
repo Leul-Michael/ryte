@@ -20,8 +20,8 @@ export default async function page() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <section className="relative flex h-full max-w-[900px] mx-auto flex-col min-h-[90vh] w-full pt-10">
       <Form tags={tags ?? []} />
-    </div>
+    </section>
   )
 }

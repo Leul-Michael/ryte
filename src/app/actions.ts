@@ -60,7 +60,9 @@ export async function saveStory({
     })
 
     revalidatePath("/")
-    return story
+    return {
+      msg: `Story ${story.title} created successfully`,
+    }
   } catch (e: any) {
     console.log(e)
   }
