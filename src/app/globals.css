@@ -2,26 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
+  .tiptap h1 {
+    @apply text-5xl;
+    @apply font-medium;
+    @apply font-serif;
+  }
 
-@media (prefers-color-scheme: dark) {
+  .tiptap h2 {
+    @apply text-4xl;
+    @apply font-medium;
+    @apply font-serif;
+  }
+
+  .tiptap h3 {
+    @apply text-3xl;
+    @apply font-medium;
+    @apply font-serif;
+  }
+
+
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-green: 94 96% 47.5%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 3%;
+    --foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --popover: 222.2 84% 3%;
+    --popover-foreground: 210 40% 98%;
+
+    --card: 222.2 84% 3%;
+    --card-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 15%;
+    --input: 217.2 32.6% 15%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 217.2 32.6% 15%;
+    --accent-foreground: 210 40% 98%;
+    --accent-green: 94 96% 64%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+
+    --ring: 217.2 32.6% 15%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+/* Tiptap */
+.tiptap * {
+  line-height: 1.7;
+}
+
+.tiptap ul,
+.tiptap li,
+.tiptap ol {
+  list-style: inherit;
+  padding: 0 0.25rem;
+  margin-left: 0.75rem;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+}
+
+.tiptap a {
+  color: #0490D5;
+  cursor: pointer;
+}
+
+.tiptap img {
+  height: auto;
+  max-width: 100%;
+  padding-block: 1rem;
+}
+
+.tiptap img.ProseMirror-selectednode {
+  outline: 3px solid #0490D5;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid hsl(var(--muted)/ 0.5);
+  padding-left: 1rem;
+}
+
+.tiptap hr {
+  margin: 0.5rem 0;
+}
+
+.tiptap hr.ProseMirror-selectednode {
+  border-top: 1px solid hsl(var(--muted)/ 0.5);
+}
+
+/* Place holder setup */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
