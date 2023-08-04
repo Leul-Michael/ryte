@@ -26,13 +26,15 @@ import {
   ListOrdered,
   Spline,
 } from "lucide-react"
-import { useContent, useSetContent } from "@/store/zustand"
-import { useCallback } from "react"
+import { Dispatch, SetStateAction, useCallback } from "react"
 import { Skeleton } from "./ui/skeleton"
 
-const Tiptap = () => {
-  const content = useContent()
-  const setContent = useSetContent()
+interface TiptapProps {
+  content: string
+  setContent: Dispatch<SetStateAction<string>>
+}
+
+const Tiptap = ({ content, setContent }: TiptapProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,

@@ -17,7 +17,7 @@ export const {
   auth,
   CSRF_experimental,
 } = NextAuth({
-  adapter: PrismaAdapter(prisma ?? null),
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,

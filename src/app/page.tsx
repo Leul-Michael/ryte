@@ -4,16 +4,28 @@ import Link from "next/link"
 import { auth } from "@/lib/auth"
 import StoryTags from "@/components/story-tags"
 import prisma from "@/lib/prisma"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 
-// async function getMyTags() {
-//   const session = await auth()
+async function getMyTags() {
+  const session = await auth()
+  const userId = session.user?.id as string
 
-//   const tags = prisma.tag.findMany({
-//     where: {
+  const tags = await prisma.tag.findMany({
+    where: {
+      followers: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+  })
 
-//     }
-//   })
-// }
+  return tags
+}
+
+export const dynamic = "force-dynamic"
+// export const runtime = "edge"
 
 export default async function Home() {
   const session = await auth()
@@ -24,7 +36,8 @@ export default async function Home() {
   )
 }
 
-const Authed = () => {
+async function Authed() {
+  const tags = await getMyTags()
   return (
     <div className="w-full h-full flex flex-col flex-1 py-12 gap-8">
       <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
@@ -33,12 +46,16 @@ const Authed = () => {
       <p className="text-xl max-w-[500px] text-muted-foreground">
         Discover topics, thinking, and expertise from writers on any topic.
       </p>
-      <StoryTags />
+      <Suspense
+        fallback={<Skeleton className="w-full h-[30px] rounded-full my-4" />}
+      >
+        <StoryTags tags={tags} />
+      </Suspense>
     </div>
   )
 }
 
-const UnAuthed = () => {
+function UnAuthed() {
   return (
     <>
       <div className="flex flex-col w-full gap-8">

@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { slugify } from "@/lib/utils"
 
-async function getSession(): Promise<Session> {
+export async function getSession(): Promise<Session> {
   const session = await auth()
 
   if (!session) {
@@ -26,6 +26,7 @@ export async function saveStory({
   tags: string[]
 }) {
   const session = await getSession()
+  const userId = session.user?.id as string
 
   let slug = slugify(`${title}`)
   let i = 0
@@ -50,7 +51,7 @@ export async function saveStory({
         slug,
         user: {
           connect: {
-            id: session.user.id,
+            id: userId,
           },
         },
         tags: {
@@ -66,4 +67,56 @@ export async function saveStory({
   } catch (e: any) {
     console.log(e)
   }
+}
+
+export async function toggleFollwoTag(tagId: string) {
+  const session = await getSession()
+  const userId = session.user?.id as string
+
+  const followsTag = await prisma.tag.findFirst({
+    where: {
+      id: tagId,
+      followers: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+  })
+
+  let addedFollow
+
+  if (followsTag == null) {
+    await prisma.tag.update({
+      where: {
+        id: tagId,
+      },
+      data: {
+        followers: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    })
+    addedFollow = true
+  } else {
+    await prisma.tag.update({
+      where: {
+        id: tagId,
+      },
+      data: {
+        followers: {
+          disconnect: {
+            id: userId,
+          },
+        },
+      },
+    })
+    addedFollow = false
+  }
+
+  revalidatePath("/tag")
+  revalidatePath("/")
+  return { addedFollow }
 }

@@ -16,3 +16,6 @@ export function slugify(value: string) {
     .replace(/^-+/, "")
     .replace(/-+$/, "")
 }
+
+// Swr
+export const fetcher = (url: string) => fetch(url).then((r) => r.json())

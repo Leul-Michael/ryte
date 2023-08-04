@@ -3,7 +3,6 @@
 import Tiptap from "@/components/tiptap"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useContent, useSetTitle, useTitle } from "@/store/zustand"
 import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { SelectTags } from "./select-tags-form"
@@ -15,9 +14,8 @@ interface FormProps {
 
 const Form = ({ tags }: FormProps) => {
   const { toast } = useToast()
-  const title = useTitle()
-  const setTitle = useSetTitle()
-  const content = useContent()
+  const [title, setTitle] = useState("")
+  const [content, setContent] = useState("")
   const [showTagsModal, setShowTagModals] = useState(false)
 
   const noContent =
@@ -37,13 +35,23 @@ const Form = ({ tags }: FormProps) => {
     setShowTagModals(true)
   }
 
+  const clearInputs = () => {
+    setTitle("")
+    setContent("")
+  }
+
   return (
     <>
-      <SelectTags
-        tags={tags ?? []}
-        showModal={showTagsModal}
-        setShowModal={setShowTagModals}
-      />
+      {showTagsModal ? (
+        <SelectTags
+          tags={tags ?? []}
+          showModal={showTagsModal}
+          setShowModal={setShowTagModals}
+          title={title}
+          content={content}
+          clear={clearInputs}
+        />
+      ) : null}
       <form onSubmit={continueToAddTags} className="flex flex-col pb-10">
         <Button
           type="submit"
@@ -60,7 +68,7 @@ const Form = ({ tags }: FormProps) => {
           onChange={(e) => setTitle(e.target.value)}
           className="text-5xl h-full border-0 font-serif rounded-none focus-visible:ring-0 font-semibold border-b border-border/50 py-4"
         />
-        <Tiptap />
+        <Tiptap content={content} setContent={setContent} />
       </form>
     </>
   )

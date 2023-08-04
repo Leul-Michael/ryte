@@ -20,7 +20,7 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
   if (pathname?.includes("/auth/")) return null
 
   return (
-    <header className="sticky z-[100] top-0 left-0 flex bg-background max-w-screen-2xl mx-auto md:px-8 px-4 justify-between items-center w-full border-b border-border py-[0.65rem]">
+    <header className="sticky z-[49] top-0 left-0 flex bg-background max-w-screen-2xl mx-auto md:px-8 px-4 justify-between items-center w-full border-b border-border py-[0.65rem]">
       <div className="flex gap-8 items-center">
         <Link href="/">
           <h1 className="font-serif text-2xl font-bold text-accent-green uppercase">
