@@ -7,6 +7,18 @@ export interface User {
   role: string
 }
 
+export interface Story {
+  id: string
+  title: string
+  content: string
+  user: User
+  tags: Tag[]
+  slug: string
+  userId: string
+  updated_at: Date
+  created_at: Date
+}
+
 export interface Tag {
   id: string
   title: string

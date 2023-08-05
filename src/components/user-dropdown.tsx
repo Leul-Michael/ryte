@@ -18,20 +18,18 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LogoutButton from "./logout-button"
 import { HeaderInnerProps } from "./header-inner"
+import AvatarIcon from "./avatar"
 
 export async function UserDropdown({ user }: HeaderInnerProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="w-9 h-9">
-          <AvatarImage src={user?.image ?? undefined} />
-          <AvatarFallback className="select-none">
-            {user?.name?.charAt(0) ?? "U"}
-          </AvatarFallback>
-        </Avatar>
+        <AvatarIcon
+          name={user?.name?.charAt(0) ?? "U"}
+          image={user?.image ?? null}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 z-[100]">
         <DropdownMenuLabel>

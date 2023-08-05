@@ -67,9 +67,11 @@ model VerificationToken {
 model Story {
   id String @id @default(cuid())
 
-  title   String
-  content String
-  slug    String @unique
+  title       String
+  description String?
+  thumbnail   String
+  content     String
+  slug        String  @unique
 
   userId   String
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)

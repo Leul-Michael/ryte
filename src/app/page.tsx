@@ -4,40 +4,66 @@ import Link from "next/link"
 import { auth } from "@/lib/auth"
 import StoryTags from "@/components/story-tags"
 import prisma from "@/lib/prisma"
+import StoriesTimeline from "@/components/stories-timeline"
 import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
+import StorySkeleton from "@/components/skeletons/story-skeleton"
 
-async function getMyTags() {
-  const session = await auth()
-  const userId = session.user?.id as string
+// async function getMyTags() {
+//   const session = await auth()
+//   const userId = session.user?.id as string
 
-  const tags = await prisma.tag.findMany({
+// const tags = await prisma.tag.findMany({
+//   where: {
+//     followers: {
+//       some: {
+//         id: userId,
+//       },
+//     },
+//   },
+// })
+
+//   return tags
+// }
+
+async function getStories(tag?: string) {
+  const stories = await prisma.story.findMany({
     where: {
-      followers: {
+      tags: {
         some: {
-          id: userId,
+          title: { contains: tag, mode: "insensitive" },
         },
       },
     },
+    include: {
+      user: true,
+      tags: true,
+    },
   })
 
-  return tags
+  return stories
 }
 
 export const dynamic = "force-dynamic"
 // export const runtime = "edge"
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const tag =
+    typeof searchParams.tag === "string" ? searchParams.tag : undefined
   const session = await auth()
+
   return (
     <section className="flex h-full flex-col min-h-[90vh] w-full justify-center">
-      {session?.user ? <Authed /> : <UnAuthed />}
+      {session?.user ? <Authed tag={tag} /> : <UnAuthed />}
     </section>
   )
 }
 
-async function Authed() {
-  const tags = await getMyTags()
+async function Authed({ tag }: { tag: string | undefined }) {
+  const stories = await getStories(tag)
   return (
     <div className="w-full h-full flex flex-col flex-1 py-12 gap-8">
       <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
@@ -46,10 +72,17 @@ async function Authed() {
       <p className="text-xl max-w-[500px] text-muted-foreground">
         Discover topics, thinking, and expertise from writers on any topic.
       </p>
+      <StoryTags search={tag ?? null} />
       <Suspense
-        fallback={<Skeleton className="w-full h-[30px] rounded-full my-4" />}
+        fallback={
+          <div className="grid grid-cols-layout-450 gap-4">
+            {[...Array(8).keys()].map((i) => (
+              <StorySkeleton key={i} />
+            ))}
+          </div>
+        }
       >
-        <StoryTags tags={tags} />
+        <StoriesTimeline stories={stories} />
       </Suspense>
     </div>
   )

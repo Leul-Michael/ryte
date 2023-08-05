@@ -8,7 +8,7 @@ import Search from "./search"
 
 async function getTags(title?: string) {
   const session = await auth()
-  const userId = session.user?.id as string
+  const userId = session?.user?.id as string
 
   const data = await prisma.tag.findMany({
     where: {

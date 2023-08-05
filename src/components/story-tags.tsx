@@ -7,14 +7,32 @@ import clsx from "clsx"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { LayoutGroup, motion } from "framer-motion"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { fetcher } from "@/lib/utils"
+import useSWR from "swr"
+import { Skeleton } from "./ui/skeleton"
+import { useRouter } from "next/navigation"
 
-interface StoryTagsProps {
-  tags: Tag[]
-}
+// interface StoryTagsProps {
+//   tags: Tag[]
+// }
 
-const StoryTags = ({ tags }: StoryTagsProps) => {
-  const [idx, setIdx] = useState("you")
+const StoryTags = ({ search }: { search: string | null }) => {
+  const router = useRouter()
+  const { data, isLoading } = useSWR("/api/tag/follow", fetcher, {
+    revalidateOnMount: true,
+  })
+  const [idx, setIdx] = useState(search ?? "for-you")
+
+  useEffect(() => {
+    if (!idx || idx === "for-you") return router.push("/")
+    router.push(`?tag=${idx}`)
+  }, [idx, router])
+
+  const isActive = (value: string) => {
+    return idx === value
+  }
+
   return (
     <LayoutGroup>
       <nav
@@ -25,14 +43,21 @@ const StoryTags = ({ tags }: StoryTagsProps) => {
           <Plus size={20} />
         </Link>
         <Button
-          onClick={() => setIdx("you")}
+          onClick={() => setIdx("for-you")}
           role="tab"
           className="hover:bg-transparent py-0 px-2 relative"
           variant="ghost"
         >
-          <span className="relative py-1 px-2">
+          <span
+            className={clsx(
+              "relative py-1 px-2 whitespace-nowrap",
+              isActive("for-you")
+                ? "opacity-100"
+                : "opacity-70 hover:opacity-100"
+            )}
+          >
             For You
-            {idx === "you" ? (
+            {idx === "for-you" ? (
               <motion.div
                 className="absolute h-[1px] top-[120%] mx-2 inset-0 bg-accent-green"
                 layoutId="sidebar"
@@ -45,30 +70,41 @@ const StoryTags = ({ tags }: StoryTagsProps) => {
             ) : null}
           </span>
         </Button>
-        {tags.map((t) => (
-          <Button
-            key={t.id}
-            onClick={() => setIdx(t.id)}
-            role="tab"
-            className="hover:bg-transparent py-0 px-2"
-            variant="ghost"
-          >
-            <span className="relative py-1 px-2">
-              {t.title}
-              {idx === t.id ? (
-                <motion.div
-                  className="absolute h-[1px] top-[120%] mx-2 inset-0 bg-accent-green"
-                  layoutId="sidebar"
-                  transition={{
-                    type: "spring",
-                    stiffness: 350,
-                    damping: 30,
-                  }}
-                />
-              ) : null}
-            </span>
-          </Button>
-        ))}
+        {isLoading ? (
+          <Skeleton className="w-full h-[20px] rounded-md" />
+        ) : (
+          data?.tags?.map((t: Tag) => (
+            <Button
+              key={t.title}
+              onClick={() => setIdx(t.title.toLowerCase())}
+              role="tab"
+              className="hover:bg-transparent py-0 px-2"
+              variant="ghost"
+            >
+              <span
+                className={clsx(
+                  "relative py-1 px-2 whitespace-nowrap",
+                  isActive(t.title.toLowerCase())
+                    ? "opacity-100"
+                    : "opacity-70 hover:opacity-100"
+                )}
+              >
+                {t.title}
+                {idx === t.title.toLowerCase() ? (
+                  <motion.div
+                    className="absolute h-[1px] top-[120%] mx-2 inset-0 bg-accent-green"
+                    layoutId="sidebar"
+                    transition={{
+                      type: "spring",
+                      stiffness: 350,
+                      damping: 30,
+                    }}
+                  />
+                ) : null}
+              </span>
+            </Button>
+          ))
+        )}
       </nav>
     </LayoutGroup>
   )

@@ -76,6 +76,7 @@ module.exports = {
       },
       gridTemplateColumns: {
         "layout-250": "repeat(auto-fill, minmax(250px, 1fr))",
+        "layout-450": "repeat(auto-fill, minmax(450px, 1fr))",
       },
     },
   },

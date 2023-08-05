@@ -117,6 +117,5 @@ export async function toggleFollwoTag(tagId: string) {
   }
 
   revalidatePath("/tag")
-  revalidatePath("/")
   return { addedFollow }
 }

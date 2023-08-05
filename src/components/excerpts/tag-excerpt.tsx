@@ -40,8 +40,7 @@ const TagExcerpt = ({ tag }: TagExcerptProps) => {
           disabled={pending}
           onClick={async () => {
             startTransition(async () => {
-              const res = await toggleFollwoTag(tag.id)
-              console.log(res)
+              await toggleFollwoTag(tag.id)
             })
           }}
           variant="outline"
