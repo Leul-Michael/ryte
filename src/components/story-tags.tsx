@@ -7,7 +7,7 @@ import clsx from "clsx"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { LayoutGroup, motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { fetcher } from "@/lib/utils"
 import useSWR from "swr"
 import { Skeleton } from "./ui/skeleton"
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation"
 
 const StoryTags = ({ search }: { search: string | null }) => {
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const { data, isLoading } = useSWR("/api/tag/follow", fetcher, {
     revalidateOnMount: true,
   })
@@ -43,7 +44,8 @@ const StoryTags = ({ search }: { search: string | null }) => {
           <Plus size={20} />
         </Link>
         <Button
-          onClick={() => setIdx("for-you")}
+          disabled={isPending}
+          onClick={() => startTransition(() => setIdx("for-you"))}
           role="tab"
           className="hover:bg-transparent py-0 px-2 relative"
           variant="ghost"
@@ -75,8 +77,11 @@ const StoryTags = ({ search }: { search: string | null }) => {
         ) : (
           data?.tags?.map((t: Tag) => (
             <Button
+              disabled={isPending}
               key={t.title}
-              onClick={() => setIdx(t.title.toLowerCase())}
+              onClick={() =>
+                startTransition(() => setIdx(t.title.toLowerCase()))
+              }
               role="tab"
               className="hover:bg-transparent py-0 px-2"
               variant="ghost"

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
-import { SelectTags } from "./select-tags-form"
+import { SelectTagsForm } from "./tags-form"
 import { Tag } from "../../../types"
 
 interface FormProps {
@@ -43,7 +43,7 @@ const Form = ({ tags }: FormProps) => {
   return (
     <>
       {showTagsModal ? (
-        <SelectTags
+        <SelectTagsForm
           tags={tags ?? []}
           showModal={showTagsModal}
           setShowModal={setShowTagModals}

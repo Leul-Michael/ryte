@@ -1,12 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 export default function Error() {
   const router = useRouter()
+  const pathname = usePathname()
+
   return (
-    <div className="flex flex-col h-full min-h-[90vh] justify-center items-center text-center">
+    <div className="flex flex-col h-full min-h-[90vh] justify-center gap-4 items-center text-center">
       <h1 className="font-serif text-4xl font-semibold capitalize text-accent-foreground">
         Error!
       </h1>
@@ -17,7 +19,7 @@ export default function Error() {
       <Button
         variant="outline"
         className="rounded-full"
-        onClick={() => router.refresh()}
+        onClick={() => router.push(pathname)}
       >
         Retry
       </Button>

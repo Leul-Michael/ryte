@@ -1,20 +1,16 @@
+import { JSONContent } from "@tiptap/react"
 import { create } from "zustand"
 
 interface ContentStore {
-  title: string
-  setTitle: (input: string) => void
-  content: string
-  setContent: (input: string) => void
+  contentJson: JSONContent | null
+  setContentJson: (input: JSONContent) => void
 }
 
 const useStoryStore = create<ContentStore>((set) => ({
-  title: "",
-  setTitle: (input) => set(() => ({ title: input })),
-  content: "",
-  setContent: (input) => set(() => ({ content: input })),
+  contentJson: null,
+  setContentJson: (input) => set(() => ({ contentJson: input })),
 }))
 
-export const useTitle = () => useStoryStore((state) => state.title)
-export const useSetTitle = () => useStoryStore((state) => state.setTitle)
-export const useContent = () => useStoryStore((state) => state.content)
-export const useSetContent = () => useStoryStore((state) => state.setContent)
+export const useContentJson = () => useStoryStore((state) => state.contentJson)
+export const useSetContentJson = () =>
+  useStoryStore((state) => state.setContentJson)

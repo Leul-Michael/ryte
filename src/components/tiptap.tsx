@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 import { Dispatch, SetStateAction, useCallback } from "react"
 import { Skeleton } from "./ui/skeleton"
+import { useSetContentJson } from "@/store/zustand"
 
 interface TiptapProps {
   content: string
@@ -35,6 +36,7 @@ interface TiptapProps {
 }
 
 const Tiptap = ({ content, setContent }: TiptapProps) => {
+  const setContentJson = useSetContentJson()
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -57,6 +59,7 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
     },
     onUpdate: ({ editor }) => {
       setContent(editor?.getHTML())
+      setContentJson(editor?.getJSON())
     },
   })
 
