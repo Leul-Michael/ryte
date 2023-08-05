@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import { Session } from "next-auth/types"
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
-import { slugify } from "@/lib/utils"
+import { readingTime, slugify } from "@/lib/utils"
 
 export async function getSession(): Promise<Session> {
   const session = await auth()
@@ -19,14 +19,20 @@ export async function getSession(): Promise<Session> {
 export async function saveStory({
   title,
   content,
+  description,
+  thumbnail,
   tags,
 }: {
   title: string
   content: string
+  description: string
+  thumbnail?: string
   tags: string[]
 }) {
   const session = await getSession()
   const userId = session.user?.id as string
+
+  const min_read = readingTime(content)
 
   let slug = slugify(`${title}`)
   let i = 0
@@ -48,7 +54,10 @@ export async function saveStory({
       data: {
         title,
         content,
+        description,
+        thumbnail: thumbnail ?? null,
         slug,
+        min_read,
         user: {
           connect: {
             id: userId,
@@ -62,6 +71,7 @@ export async function saveStory({
 
     revalidatePath("/")
     return {
+      story,
       msg: `Story ${story.title} created successfully`,
     }
   } catch (e: any) {

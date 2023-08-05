@@ -40,10 +40,9 @@ const StoryExcerpt = ({ story }: StoryExcerptProps) => {
           </TooltipProvider>
 
           <p className="text-[0.95rem] leading-[1.4] text-secondary-foreground">
-            Session is stored and used to communicate clients and servers for a
-            certain amount of time. Today, we will talk about how to implement
-            session in Next.js application. We will create a simple application
-            to
+            {story.description.length > 300
+              ? story.description.slice(0, 300) + "..."
+              : story.description}
           </p>
         </div>
         <Image

@@ -79,6 +79,8 @@ model Story {
   likes    Like[]
   comments Comment[]
 
+  min_read Int
+
   updated_at DateTime @updatedAt
   created_at DateTime @default(now())
 }

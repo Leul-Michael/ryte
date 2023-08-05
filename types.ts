@@ -10,6 +10,7 @@ export interface User {
 export interface Story {
   id: string
   title: string
+  description: string
   content: string
   user: User
   tags: Tag[]
