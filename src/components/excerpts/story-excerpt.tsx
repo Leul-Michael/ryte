@@ -7,19 +7,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip"
+import { format } from "date-fns"
 
 interface StoryExcerptProps {
   story: Story
 }
 
 const StoryExcerpt = ({ story }: StoryExcerptProps) => {
+  const date = new Date(story.created_at)
   return (
     <div className="flex flex-col py-6 pr-6 gap-3">
       <div className="flex items-center gap-4">
         <AvatarIcon name={story.user.image} image={story.user.image} />
         <div className="flex gap-2 items-baseline">
           <span className="text-xl font-serif">Leul Michael</span>
-          <span className="text-sm text-muted-foreground">Nov 13, 2023</span>
+          <span className="text-sm text-muted-foreground">
+            {format(date, "MMM dd,yyyy")}
+          </span>
         </div>
       </div>
       <div className="flex items-center gap-4">
@@ -58,7 +62,7 @@ const StoryExcerpt = ({ story }: StoryExcerptProps) => {
           {story.tags[0].title}
         </span>
         <p className="p-1 w-fit text-sm text-muted-foreground rounded-sm">
-          4 min read
+          {story.min_read} min read
         </p>
       </div>
     </div>

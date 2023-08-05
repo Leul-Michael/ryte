@@ -61,7 +61,7 @@ const StoryTags = ({ search }: { search: string | null }) => {
             For You
             {idx === "for-you" ? (
               <motion.div
-                className="absolute h-[1px] top-[120%] mx-2 inset-0 bg-accent-green"
+                className="absolute h-[2px] top-[120%] mx-2 inset-0 bg-accent-green"
                 layoutId="sidebar"
                 transition={{
                   type: "spring",
@@ -97,7 +97,7 @@ const StoryTags = ({ search }: { search: string | null }) => {
                 {t.title}
                 {idx === t.title.toLowerCase() ? (
                   <motion.div
-                    className="absolute h-[1px] top-[120%] mx-2 inset-0 bg-accent-green"
+                    className="absolute h-[2px] top-[120%] mx-2 inset-0 bg-accent-green"
                     layoutId="sidebar"
                     transition={{
                       type: "spring",

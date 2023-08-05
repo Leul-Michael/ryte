@@ -26,7 +26,7 @@ export async function saveStory({
   title: string
   content: string
   description: string
-  thumbnail?: string
+  thumbnail?: any
   tags: string[]
 }) {
   const session = await getSession()

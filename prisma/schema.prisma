@@ -69,9 +69,9 @@ model Story {
 
   title       String
   description String
-  thumbnail   String?
+  thumbnail   Json?
   content     String
-  slug        String  @unique
+  slug        String @unique
 
   userId   String
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)

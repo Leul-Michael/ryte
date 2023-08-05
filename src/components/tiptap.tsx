@@ -28,7 +28,12 @@ import {
 } from "lucide-react"
 import { Dispatch, SetStateAction, useCallback } from "react"
 import { Skeleton } from "./ui/skeleton"
-import { useSetContentJson } from "@/store/zustand"
+import {
+  useSetContentJson,
+  useSetShowEditorImgModal,
+  useShowEditorImgModal,
+} from "@/store/zustand"
+import TiptapImageModal from "./tiptap-image-modal"
 
 interface TiptapProps {
   content: string
@@ -37,6 +42,9 @@ interface TiptapProps {
 
 const Tiptap = ({ content, setContent }: TiptapProps) => {
   const setContentJson = useSetContentJson()
+  const showImageModal = useShowEditorImgModal()
+  const setShowImageModal = useSetShowEditorImgModal()
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -64,75 +72,84 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
   })
 
   return (
-    <div className="tiptap flex flex-col w-full">
-      {editor && <FloatingMenuOptions editor={editor} />}
-      {editor && <BubbleMenuOptions editor={editor} />}
-      {!editor ? (
-        <Skeleton className="w-full h-[30px] rounded-full my-4" />
-      ) : (
-        <EditorContent
-          className="w-full flex flex-col gap-4 min-h-[40vh] rounded-sm"
-          editor={editor}
-        />
-      )}
-    </div>
+    <>
+      {showImageModal
+        ? editor && (
+            <TiptapImageModal
+              show={showImageModal}
+              setShow={setShowImageModal}
+              editor={editor}
+            />
+          )
+        : null}
+      <div className="tiptap flex flex-col w-full">
+        {editor && <FloatingMenuOptions editor={editor} />}
+        {editor && <BubbleMenuOptions editor={editor} />}
+        {!editor ? (
+          <Skeleton className="w-full h-[30px] rounded-full my-4" />
+        ) : (
+          <EditorContent
+            className="w-full flex flex-col gap-4 min-h-[40vh] rounded-sm"
+            editor={editor}
+          />
+        )}
+      </div>
+    </>
   )
 }
 
 export default Tiptap
 
 const FloatingMenuOptions = ({ editor }: { editor: Editor }) => {
+  const showImageModal = useShowEditorImgModal()
+
   return (
     <FloatingMenu
-      className="flex flex-wrap items-stretch gap-2 bg-background rounded-[4px] p-1 max-w-[400px]"
+      className="flex z-[49] flex-wrap items-stretch gap-2 bg-background rounded-[4px] p-1 max-w-[400px]"
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
-      <Buttons editor={editor} />
+      {!showImageModal && <Buttons editor={editor} />}
     </FloatingMenu>
   )
 }
 
 const BubbleMenuOptions = ({ editor }: { editor: Editor }) => {
+  const showImageModal = useShowEditorImgModal()
+
   return (
     <BubbleMenu
-      className="flex flex-wrap items-stretch gap-2 bg-background rounded-[4px] p-1 max-w-[400px]"
+      className="flex z-[49] flex-wrap items-stretch gap-2 bg-background rounded-[4px] p-1 max-w-[400px]"
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
-      <Buttons editor={editor} bubble />
+      {!showImageModal && <Buttons editor={editor} bubble />}
     </BubbleMenu>
   )
 }
 
 const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
+  const setShowImageModal = useSetShowEditorImgModal()
+
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes("link").href
     const url = window.prompt("URL", previousUrl)
-
     // cancelled
     if (url === null) {
       return
     }
-
     // empty
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run()
-
       return
     }
-
     // update link
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
   }, [editor])
 
-  const addImage = useCallback(() => {
-    const url = window.prompt("URL")
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run()
-    }
-  }, [editor])
+  const addImage = () => {
+    setShowImageModal(true)
+  }
 
   return (
     <>

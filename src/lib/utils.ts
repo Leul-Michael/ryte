@@ -36,6 +36,36 @@ export const getDescription = (contentJson: JSONContent | null): string => {
   return firstParagraph.content[0].text ?? ""
 }
 
+// get thumbnail for the story
+export const getThumbnail = (
+  contentJson: JSONContent | null
+): {
+  src: string | null
+  alt?: string | null
+} => {
+  if (contentJson == null)
+    return {
+      src: null,
+    }
+
+  const firstImage = contentJson?.content?.find((c) => {
+    if (c.type === "image" && c.attrs) {
+      return c
+    }
+  })
+
+
+  if (firstImage == null || firstImage.attrs == null)
+    return {
+      src: null,
+    }
+
+  return {
+    src: firstImage.attrs.src,
+    alt: firstImage.attrs.alt ?? null,
+  }
+}
+
 // estimate minute read
 export function readingTime(text: string) {
   const wordsPerMinute = 225

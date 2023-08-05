@@ -56,7 +56,7 @@ const Form = ({ tags }: FormProps) => {
         <Button
           type="submit"
           disabled={!title || noContent}
-          className={`sticky z-[99] self-end top-20 px-8 left-0 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black ${
+          className={`sticky z-[50] self-end top-20 px-8 left-0 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black ${
             showTagsModal ? "opacity-0" : "opacity-100"
           }`}
         >

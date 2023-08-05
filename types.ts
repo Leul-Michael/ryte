@@ -16,6 +16,7 @@ export interface Story {
   tags: Tag[]
   slug: string
   userId: string
+  min_read: number
   updated_at: Date
   created_at: Date
 }
