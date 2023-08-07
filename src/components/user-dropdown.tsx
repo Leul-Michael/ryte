@@ -25,7 +25,7 @@ import AvatarIcon from "./avatar"
 export async function UserDropdown({ user }: HeaderInnerProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger className="outline-none">
         <AvatarIcon
           name={user?.name?.charAt(0) ?? "U"}
           image={user?.image ?? null}

@@ -12,6 +12,7 @@ import { fetcher } from "@/lib/utils"
 import useSWR from "swr"
 import { Skeleton } from "./ui/skeleton"
 import { useRouter } from "next/navigation"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 
 // interface StoryTagsProps {
 //   tags: Tag[]
@@ -27,7 +28,8 @@ const StoryTags = ({ search }: { search: string | null }) => {
 
   useEffect(() => {
     if (!idx || idx === "for-you") return router.push("/")
-    router.push(`?tag=${idx}`)
+    else router.push(`?tag=${idx}`)
+    router.refresh()
   }, [idx, router])
 
   const isActive = (value: string) => {
@@ -38,7 +40,7 @@ const StoryTags = ({ search }: { search: string | null }) => {
     <LayoutGroup>
       <nav
         role="tablist"
-        className="relative flex items-center justify-normal w-fit min-w-[500px] border-b border-border"
+        className="relative flex items-center justify-normal w-fit min-w-[500px] h-full border-b border-border overflow-x-auto"
       >
         <Link role="tab" className="hover:bg-transparent px-0" href="/tag">
           <Plus size={20} />

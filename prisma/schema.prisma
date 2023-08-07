@@ -68,7 +68,7 @@ model Story {
   id String @id @default(cuid())
 
   title       String
-  description String
+  description Json
   thumbnail   Json?
   content     String
   slug        String @unique

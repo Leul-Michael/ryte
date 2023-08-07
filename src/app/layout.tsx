@@ -6,7 +6,11 @@ import { Header } from "@/components/header"
 import { ThemeProvider } from "@/components/theme/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 
-const inter = Inter({ subsets: ["latin"], display: "swap" })
+const inter = Inter({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+})
 const garamond = EB_Garamond({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],

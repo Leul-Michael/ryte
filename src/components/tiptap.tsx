@@ -13,6 +13,9 @@ import Placeholder from "@tiptap/extension-placeholder"
 import LinkExtenstion from "@tiptap/extension-link"
 import ImageExtenstion from "@tiptap/extension-image"
 import UnderlineExtenstion from "@tiptap/extension-underline"
+import TextAlign from "@tiptap/extension-text-align"
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
+import Youtube from "@tiptap/extension-youtube"
 
 import {
   Bold,
@@ -25,6 +28,11 @@ import {
   Underline,
   ListOrdered,
   Spline,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Code2,
+  YoutubeIcon,
 } from "lucide-react"
 import { Dispatch, SetStateAction, useCallback } from "react"
 import { Skeleton } from "./ui/skeleton"
@@ -34,6 +42,17 @@ import {
   useShowEditorImgModal,
 } from "@/store/zustand"
 import TiptapImageModal from "./tiptap-image-modal"
+import css from "highlight.js/lib/languages/css"
+import js from "highlight.js/lib/languages/javascript"
+import ts from "highlight.js/lib/languages/typescript"
+import html from "highlight.js/lib/languages/xml"
+// load all highlight.js languages
+import { lowlight } from "lowlight/lib/core"
+
+lowlight.registerLanguage("html", html)
+lowlight.registerLanguage("css", css)
+lowlight.registerLanguage("js", js)
+lowlight.registerLanguage("ts", ts)
 
 interface TiptapProps {
   content: string
@@ -58,6 +77,15 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
       }),
       ImageExtenstion,
       UnderlineExtenstion,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
+      Youtube.configure({
+        controls: false,
+      }),
     ],
     content,
     editorProps: {
@@ -71,6 +99,14 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
     },
   })
 
+  const onImgaeSelect = useCallback(
+    (src: string, alt: string) => {
+      if (!editor) return
+      editor.chain().focus().setImage({ src, alt }).run()
+    },
+    [editor]
+  )
+
   return (
     <>
       {showImageModal
@@ -78,7 +114,7 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
             <TiptapImageModal
               show={showImageModal}
               setShow={setShowImageModal}
-              editor={editor}
+              onSelect={onImgaeSelect}
             />
           )
         : null}
@@ -149,6 +185,17 @@ const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
 
   const addImage = () => {
     setShowImageModal(true)
+  }
+
+  const addYoutubeVideo = () => {
+    const url = prompt("Enter YouTube URL")
+
+    if (url) {
+      editor.commands.setYoutubeVideo({
+        src: url,
+        height: 480,
+      })
+    }
   }
 
   return (
@@ -232,6 +279,16 @@ const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
       >
         <ImageIcon size={15} />
       </button>
+      <button
+        title="link youtube video"
+        onClick={(e) => {
+          e.preventDefault()
+          addYoutubeVideo()
+        }}
+        className={`rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+      >
+        <YoutubeIcon size={15} />
+      </button>
       {bubble && (
         <>
           <button
@@ -291,6 +348,55 @@ const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
             <ListOrdered size={15} />
           </button>
           <button
+            title="align left"
+            onClick={(e) => {
+              e.preventDefault()
+              editor.chain().focus().setTextAlign("left").run()
+            }}
+            className={`${
+              editor.isActive({ textAlign: "left" }) ? "bg-muted" : ""
+            } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+          >
+            <AlignLeft size={15} />
+          </button>
+          <button
+            title="align center"
+            onClick={(e) => {
+              e.preventDefault()
+              editor.chain().focus().setTextAlign("center").run()
+            }}
+            className={`${
+              editor.isActive({ textAlign: "center" }) ? "bg-muted" : ""
+            } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+          >
+            <AlignCenter size={15} />
+          </button>
+          <button
+            title="align right"
+            onClick={(e) => {
+              e.preventDefault()
+              editor.chain().focus().setTextAlign("right").run()
+            }}
+            className={`${
+              editor.isActive({ textAlign: "right" }) ? "bg-muted" : ""
+            } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+          >
+            <AlignRight size={15} />
+          </button>
+          <button
+            title="horizontal line"
+            onClick={(e) => {
+              e.preventDefault()
+              editor.chain().focus().toggleCodeBlock().run()
+            }}
+            className={`${
+              editor.isActive("codeBlock") ? "bg-muted" : ""
+            } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+          >
+            <Code2 size={15} />
+          </button>
+          <button
+            title="horizontal line"
             onClick={(e) => {
               e.preventDefault()
               editor.chain().focus().setHorizontalRule().run()

@@ -3,10 +3,10 @@ import { BookOpen } from "lucide-react"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import StoryTags from "@/components/story-tags"
-import prisma from "@/lib/prisma"
 import StoriesTimeline from "@/components/stories-timeline"
 import { Suspense } from "react"
 import StorySkeleton from "@/components/skeletons/story-skeleton"
+import ForceRefresh from "@/components/force-refresh"
 
 // async function getMyTags() {
 //   const session = await auth()
@@ -25,24 +25,6 @@ import StorySkeleton from "@/components/skeletons/story-skeleton"
 //   return tags
 // }
 
-async function getStories(tag?: string) {
-  const stories = await prisma.story.findMany({
-    where: {
-      tags: {
-        some: {
-          title: { contains: tag, mode: "insensitive" },
-        },
-      },
-    },
-    include: {
-      user: true,
-      tags: true,
-    },
-  })
-
-  return stories
-}
-
 export const dynamic = "force-dynamic"
 // export const runtime = "edge"
 
@@ -57,15 +39,15 @@ export default async function Home({
 
   return (
     <section className="flex h-full flex-col min-h-[90vh] w-full justify-center">
+      <ForceRefresh />
       {session?.user ? <Authed tag={tag} /> : <UnAuthed />}
     </section>
   )
 }
 
 async function Authed({ tag }: { tag: string | undefined }) {
-  const stories = await getStories(tag)
   return (
-    <div className="w-full h-full flex flex-col flex-1 py-12 gap-8">
+    <div className="w-full h-full flex flex-col flex-1 py-12 gap-8 overflow-hidden">
       <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
         Explore Stories
       </h1>
@@ -75,14 +57,14 @@ async function Authed({ tag }: { tag: string | undefined }) {
       <StoryTags search={tag ?? null} />
       <Suspense
         fallback={
-          <div className="grid grid-cols-layout-450 gap-4">
-            {[...Array(8).keys()].map((i) => (
+          <div className="grid grid-cols-layout-450 gap-8">
+            {[...Array(4).keys()].map((i) => (
               <StorySkeleton key={i} />
             ))}
           </div>
         }
       >
-        <StoriesTimeline stories={stories} />
+        <StoriesTimeline tag={tag ?? ""} />
       </Suspense>
     </div>
   )

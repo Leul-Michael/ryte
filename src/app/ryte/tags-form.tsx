@@ -1,6 +1,12 @@
 import { Tag } from "../../../types"
-import { Dispatch, SetStateAction, useState, useTransition } from "react"
-import { Loader2 } from "lucide-react"
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  useTransition,
+} from "react"
+import { ImageIcon, Loader2 } from "lucide-react"
 
 import { getDescription, getThumbnail } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -8,12 +14,19 @@ import { Button } from "@/components/ui/button"
 import { saveStory } from "@/app/actions"
 import { redirect } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import * as DOMPurify from "dompurify"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Wrapper from "@/components/ui/wrapper"
 import SelectTags from "./select-tags"
-import { useContentJson } from "@/store/zustand"
+import {
+  useContentJson,
+  useSetContentJson,
+  useSetShowEditorImgModal,
+  useSetStoryThumbnail,
+  useShowEditorImgModal,
+  useStoryThumbnail,
+} from "@/store/zustand"
 import Image from "next/image"
+import TiptapImageModal from "@/components/tiptap-image-modal"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface SelectTagsFormProps {
   tags: Tag[]
@@ -36,13 +49,27 @@ export function SelectTagsForm({
   const [pending, startTransition] = useTransition()
 
   const contentJson = useContentJson()
+  const setContentJson = useSetContentJson()
+
   const contentDescripton = getDescription(contentJson)
   const contentThumbnail = getThumbnail(contentJson)
-  const [thumbnail, setThumbnail] = useState(contentThumbnail)
+
+  const showImageModal = useShowEditorImgModal()
+  const setShowImageModal = useSetShowEditorImgModal()
+  const thumbnail = useStoryThumbnail()
+  const setThumbnail = useSetStoryThumbnail()
+
   const [description, setDescription] = useState<string>(contentDescripton)
   const [values, setValues] = useState<string[]>([])
 
-  console.log(contentThumbnail)
+  useEffect(() => {
+    if (!thumbnail.src && contentThumbnail.src) {
+      setThumbnail({
+        src: contentThumbnail.src ?? "",
+        alt: contentThumbnail?.alt ?? "",
+      })
+    }
+  }, [contentThumbnail, setThumbnail, thumbnail.src])
 
   const createStory = async () => {
     if (!title || !content) {
@@ -51,11 +78,10 @@ export function SelectTagsForm({
         variant: "destructive",
       })
     }
-    const pureContent = DOMPurify.sanitize(content)
     startTransition(async () => {
       const res = await saveStory({
         title,
-        content: pureContent,
+        content,
         description: description.length > 0 ? description : contentDescripton,
         thumbnail,
         tags: values,
@@ -65,6 +91,11 @@ export function SelectTagsForm({
           title: res?.msg ?? "Operation successfull!",
         })
         clear()
+        setContentJson(null)
+        setThumbnail({
+          src: "",
+          alt: "",
+        })
         redirect("/")
       } else {
         toast({
@@ -75,27 +106,62 @@ export function SelectTagsForm({
     })
   }
 
+  const onImgaeSelect = (src: string, alt: string) => {
+    setThumbnail({
+      src,
+      alt,
+    })
+  }
+
   return (
-    <Wrapper show={showModal} setShow={setShowModal} pending={pending}>
-      <Card className="w-full max-w-[850px] relative">
-        <CardContent className="p-6">
-          <form action={createStory} className="flex flex-col gap-8 w-full">
+    <>
+      {showImageModal ? (
+        <TiptapImageModal
+          show={showImageModal}
+          setShow={setShowImageModal}
+          className="z-[55]"
+          onSelect={onImgaeSelect}
+        />
+      ) : null}
+      <Wrapper show={showModal} setShow={setShowModal} pending={pending}>
+        <ScrollArea className="w-full max-w-[1024px] relative my-5 overflow-auto bg-background border border-border rounded-md h-screen">
+          <form
+            action={createStory}
+            className="flex flex-col gap-8 w-full  p-3 md:p-6"
+          >
             <div className="flex items-start gap-8 flex-wrap w-full">
-              <div className="flex flex-col gap-8 h-full w-full min-w-[350px] max-w-[450px]">
-                {thumbnail.src ? (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm text-muted-foreground max-w-[80%]">
+              <div className="flex flex-col gap-8 h-full w-full min-w-[350px] max-w-[550px]">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between gap-2 max-w-[400px] w-full">
+                    <h1 className="text-2xl font-semibold font-serif">
                       Preview Image
-                    </p>
+                    </h1>
+                    <ImageIcon
+                      role="button"
+                      size={20}
+                      className="cursor-pointer"
+                      onClick={() => !pending && setShowImageModal(true)}
+                    />
+                  </div>
+                  {thumbnail.src ? (
                     <Image
                       src={thumbnail.src}
                       alt={thumbnail.alt ?? ""}
                       width={400}
                       height={200}
-                      className="max-h-[200px] object-cover"
-                    />{" "}
-                  </div>
-                ) : null}
+                      style={{
+                        maxHeight: "200px",
+                        objectFit: "cover",
+                      }}
+                      className="rounded-sm"
+                    />
+                  ) : (
+                    <p className="text-sm text-muted-foreground max-w-[80%]">
+                      Your story has no thumbnail, adding thumbnail will attract
+                      reader to your story.
+                    </p>
+                  )}
+                </div>
                 <div className="flex flex-col gap-2">
                   <p className="text-sm text-muted-foreground max-w-[80%]">
                     Add description about the story, by default the first few
@@ -154,8 +220,8 @@ export function SelectTagsForm({
               Publish
             </Button>
           </form>
-        </CardContent>
-      </Card>
-    </Wrapper>
+        </ScrollArea>
+      </Wrapper>
+    </>
   )
 }

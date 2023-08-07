@@ -7,6 +7,7 @@ import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { SelectTagsForm } from "./tags-form"
 import { Tag } from "../../../types"
+import { cn } from "@/lib/utils"
 
 interface FormProps {
   tags: Tag[]
@@ -56,9 +57,10 @@ const Form = ({ tags }: FormProps) => {
         <Button
           type="submit"
           disabled={!title || noContent}
-          className={`sticky z-[50] self-end top-20 px-8 left-0 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black ${
+          className={cn(
+            "self-end px-8 relative bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black",
             showTagsModal ? "opacity-0" : "opacity-100"
-          }`}
+          )}
         >
           Continue
         </Button>
@@ -66,7 +68,7 @@ const Form = ({ tags }: FormProps) => {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-5xl h-full border-0 font-serif rounded-none focus-visible:ring-0 font-semibold border-b border-border/50 py-4"
+          className="text-5xl h-full  outline-none border-0 font-serif rounded-none focus-visible:ring-0 font-semibold border-b border-border/50 py-4"
         />
         <Tiptap content={content} setContent={setContent} />
       </form>

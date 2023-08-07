@@ -3,15 +3,23 @@
 import { X } from "lucide-react"
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from "react"
 import { Button } from "./button"
+import { cn } from "@/lib/utils"
 
 interface WrapperProps {
   children: ReactNode
   show: boolean
   setShow: Dispatch<SetStateAction<boolean>> | ((input: boolean) => void)
   pending: boolean
+  className?: string
 }
 
-const Wrapper = ({ children, show, setShow, pending }: WrapperProps) => {
+const Wrapper = ({
+  children,
+  show,
+  setShow,
+  pending,
+  className,
+}: WrapperProps) => {
   const containerRef = useRef<HTMLElement | null>(null)
   const closeBtnRef = useRef<HTMLButtonElement | null>(null)
 
@@ -52,7 +60,10 @@ const Wrapper = ({ children, show, setShow, pending }: WrapperProps) => {
     <article
       ref={containerRef}
       data-state={show ? "open" : "closed"}
-      className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-screen overflow-auto bg-background/90"
+      className={cn(
+        "data-[state=open]:animate-in px-5 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-full overflow-auto min-h-screen bg-background/90",
+        className ?? ""
+      )}
     >
       <Button
         ref={closeBtnRef}
@@ -60,7 +71,7 @@ const Wrapper = ({ children, show, setShow, pending }: WrapperProps) => {
         disabled={pending}
         variant="outline"
         size="icon"
-        className="cursor-pointer absolute right-8 top-3 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+        className="cursor-pointer self-end sticky w-[40px] min-w-[40px] h-[40px] min-h-[40px] right-0 md:right-12 top-3 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
       >
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>

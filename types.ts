@@ -11,6 +11,7 @@ export interface Story {
   id: string
   title: string
   description: string
+  thumbnail?: any
   content: string
   user: User
   tags: Tag[]
