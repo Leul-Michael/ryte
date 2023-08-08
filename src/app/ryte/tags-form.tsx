@@ -221,7 +221,7 @@ export function SelectTagsForm({
             <Button
               type="submit"
               disabled={values.length < 2 || pending || !description}
-              className="self-start top-20 px-8 left-0 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
+              className="self-start px-8 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
             >
               {pending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

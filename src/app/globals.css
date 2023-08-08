@@ -128,11 +128,9 @@
 }
 
 .tiptap img {
-  height: auto;
-  max-height: min(600px, 90vh);
+  height: 100%;
   object-fit: cover;
   max-width: 100%;
-  padding-block: 1rem;
 }
 
 .tiptap img.ProseMirror-selectednode {

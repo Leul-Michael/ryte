@@ -167,3 +167,18 @@ export async function toggleLikeStory(storyId: string, storySlug: string) {
   revalidatePath(`/story/${storySlug}`)
   return { addedLike }
 }
+
+export async function saveComment(comment: string, storyId: string) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const newComment = await prisma.comment.create({
+    data: {
+      userId,
+      storyId,
+      comment,
+    },
+  })
+
+  return { comment: newComment }
+}

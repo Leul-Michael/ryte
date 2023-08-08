@@ -22,6 +22,15 @@ export interface Story {
   created_at: Date
 }
 
+export interface Comment {
+  id: string
+  comment: string
+  user: User
+  storyId: string
+  updated_at: Date
+  created_at: Date
+}
+
 export interface StoryDescription {
   text: string
   in_content: boolean

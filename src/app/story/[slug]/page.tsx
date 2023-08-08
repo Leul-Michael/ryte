@@ -8,6 +8,8 @@ import { auth } from "@/lib/auth"
 import StoryStats from "./story-stats"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 async function getStoryBySlug(slug: string) {
   const session = await auth()
@@ -68,10 +70,21 @@ export default async function Story({ params }: { params: { slug: string } }) {
 
   if (!story) {
     return (
-      <section className="flex h-full flex-col max-w-screen-md mx-auto pt-12 pb-20 min-h-[90vh] gap-8 w-full">
-        <h1 className="text-5xl font-serif font-semibold text-center leading-none">
+      <section className="flex h-full flex-col max-w-screen-md mx-auto pt-12 pb-20 min-h-[90vh] gap-4 w-full">
+        <h1 className="text-5xl font-serif font-semibold leading-none">
           Story not found!
         </h1>
+        <p className="text-[1.35rem] max-w-[90%] text-muted-foreground">
+          Discover other stories by exploring homepage.
+        </p>
+        <Button
+          asChild
+          type="submit"
+          variant="outline"
+          className="self-start px-8 rounded-full"
+        >
+          <Link href="/">Explore</Link>
+        </Button>
       </section>
     )
   }
@@ -142,16 +155,13 @@ export default async function Story({ params }: { params: { slug: string } }) {
                   domNode.name === "img"
                 ) {
                   return (
-                    <div className="relative my-4 flex max-h-[650px] min-h-[40vh] h-full w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
+                    <div className="relative flex my-4 max-h-[650px] min-h-[40vh] h-full w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
                       <Image
                         src={domNode.attribs.src}
                         alt={domNode.attribs.alt}
                         fill
                         sizes="100vw"
-                        style={{
-                          maxWidth: "100%",
-                        }}
-                        className="bg-gray-800/40 object-cover"
+                        className="bg-gray-800/40"
                       />
                     </div>
                   )
