@@ -87,12 +87,12 @@ model Story {
 }
 
 model Like {
-  userId  String
-  storyId String
-  user    User   @relation(fields: [userId], references: [id])
-  story   Story  @relation(fields: [storyId], references: [id])
+  userId    String
+  storySlug String
+  user      User   @relation(fields: [userId], references: [id])
+  story     Story  @relation(fields: [storySlug], references: [slug])
 
-  @@id([userId, storyId])
+  @@id([userId, storySlug])
 }
 
 model Comment {
