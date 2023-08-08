@@ -33,6 +33,7 @@ import {
   AlignRight,
   Code2,
   YoutubeIcon,
+  Braces,
 } from "lucide-react"
 import { Dispatch, SetStateAction, useCallback } from "react"
 import { Skeleton } from "./ui/skeleton"
@@ -384,7 +385,19 @@ const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
             <AlignRight size={15} />
           </button>
           <button
-            title="horizontal line"
+            title="code"
+            onClick={(e) => {
+              e.preventDefault()
+              editor.chain().focus().toggleCode().run()
+            }}
+            className={`${
+              editor.isActive("code") ? "bg-muted" : ""
+            } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
+          >
+            <Code2 size={15} />
+          </button>
+          <button
+            title="code block"
             onClick={(e) => {
               e.preventDefault()
               editor.chain().focus().toggleCodeBlock().run()
@@ -393,7 +406,7 @@ const Buttons = ({ editor, bubble }: { editor: Editor; bubble?: boolean }) => {
               editor.isActive("codeBlock") ? "bg-muted" : ""
             } rounded-[4px] border border-border px-[0.35rem] py-1 min-h-[32.5px]`}
           >
-            <Code2 size={15} />
+            <Braces size={15} />
           </button>
           <button
             title="horizontal line"

@@ -61,7 +61,7 @@ const Wrapper = ({
       ref={containerRef}
       data-state={show ? "open" : "closed"}
       className={cn(
-        "data-[state=open]:animate-in px-5 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-full overflow-auto min-h-screen bg-background/90",
+        "data-[state=open]:animate-in px-5 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-full overflow-auto min-h-screen bg-background",
         className ?? ""
       )}
     >

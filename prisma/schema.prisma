@@ -50,6 +50,7 @@ model User {
 
   stories   Story[]
   likes     Like[]
+  saved     String[]
   followers User[]    @relation(name: "Followers")
   follows   User[]    @relation(name: "Followers")
   comments  Comment[]

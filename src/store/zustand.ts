@@ -7,8 +7,13 @@ interface ContentStore {
   storyThumbnail: {
     src: string
     alt: string
+    in_content: boolean
   }
-  setStoryThumbnail: (input: { src: string; alt: string }) => void
+  setStoryThumbnail: (input: {
+    src: string
+    alt: string
+    in_content: boolean
+  }) => void
   contentJson: JSONContent | null
   setContentJson: (input: JSONContent | null) => void
 }
@@ -19,6 +24,7 @@ const useStoryStore = create<ContentStore>((set) => ({
   storyThumbnail: {
     src: "",
     alt: "",
+    in_content: false,
   },
   setStoryThumbnail: (input) => set(() => ({ storyThumbnail: input })),
   contentJson: null,

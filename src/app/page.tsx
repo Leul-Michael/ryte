@@ -8,23 +8,6 @@ import { Suspense } from "react"
 import StorySkeleton from "@/components/skeletons/story-skeleton"
 import ForceRefresh from "@/components/force-refresh"
 
-// async function getMyTags() {
-//   const session = await auth()
-//   const userId = session.user?.id as string
-
-// const tags = await prisma.tag.findMany({
-//   where: {
-//     followers: {
-//       some: {
-//         id: userId,
-//       },
-//     },
-//   },
-// })
-
-//   return tags
-// }
-
 export const dynamic = "force-dynamic"
 // export const runtime = "edge"
 
@@ -57,7 +40,7 @@ async function Authed({ tag }: { tag: string | undefined }) {
       <StoryTags search={tag ?? null} />
       <Suspense
         fallback={
-          <div className="grid grid-cols-layout-450 gap-8">
+          <div className="grid grid-cols-layout-450 gap-8 md:gap-16">
             {[...Array(4).keys()].map((i) => (
               <StorySkeleton key={i} />
             ))}
@@ -85,7 +68,7 @@ function UnAuthed() {
           asChild
           className="bg-accent-green self-start min-w-[250px] py-6 hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
         >
-          <Link href="/auth/register">
+          <Link href="/auth/login">
             <BookOpen className="mr-2 h-4 w-4" /> Read on Ryte
           </Link>
         </Button>

@@ -40,7 +40,7 @@ const StoryTags = ({ search }: { search: string | null }) => {
     <LayoutGroup>
       <nav
         role="tablist"
-        className="relative flex items-center justify-normal w-fit min-w-[500px] h-full border-b border-border overflow-x-auto"
+        className="relative flex items-center justify-normal w-fit min-w-[500px] h-full border-b border-border overflow-x-auto overflow-y-hidden"
       >
         <Link role="tab" className="hover:bg-transparent px-0" href="/tag">
           <Plus size={20} />

@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Story } from "../../../types"
+import { Story, StoryDescription } from "../../../types"
 import AvatarIcon from "../avatar"
 import {
   Tooltip,
@@ -47,9 +47,9 @@ const StoryExcerpt = ({ story }: StoryExcerptProps) => {
             </Tooltip>
           </TooltipProvider>
           <p className="text-[0.95rem] leading-[1.4] text-secondary-foreground">
-            {story.description.length > 200
-              ? story.description.slice(0, 200) + "..."
-              : story.description}
+            {(story.description as StoryDescription)?.text?.length > 200
+              ? story.description?.text.slice(0, 200) + "..."
+              : story.description?.text}
           </p>
         </div>
         {story?.thumbnail?.src ? (

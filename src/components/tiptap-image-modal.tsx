@@ -67,7 +67,7 @@ const TiptapImageModal = ({
       pending={false}
       className={className}
     >
-      <div className="w-full max-w-screen-xl mx-auto h-full min-h-screen bg-background pt-20 flex flex-col gap-4">
+      <div className="w-full max-w-screen-xl mx-auto h-full min-h-screen pt-20 flex flex-col gap-4">
         <div className="w-full flex max-w-[600px] mx-auto">
           <div className="relative w-full flex max-w-[600px] mx-auto">
             <SearchIcon

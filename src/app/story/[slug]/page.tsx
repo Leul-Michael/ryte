@@ -1,39 +1,84 @@
 import AvatarIcon from "@/components/avatar"
-import { FistIcon } from "@/components/buttons"
-import { ShareDropdown } from "@/components/share-dropdown"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { BookmarkPlus, MessageCircle } from "lucide-react"
-import { ReactNode } from "react"
 import prisma from "@/lib/prisma"
 import { format } from "date-fns"
 import Image from "next/image"
 import parse, { Element } from "html-react-parser"
+import { StoryDescription, StoryImage } from "../../../../types"
+import { auth } from "@/lib/auth"
+import StoryStats from "./story-stats"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 async function getStoryBySlug(slug: string) {
+  const session = await auth()
+  const userId = session?.user?.id as string
+
   const story = await prisma.story.findFirst({
     where: {
       slug,
     },
-    include: {
-      tags: true,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      thumbnail: true,
+      content: true,
+      min_read: true,
       user: true,
+      created_at: true,
+      updated_at: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
+      likes:
+        userId == null
+          ? false
+          : {
+              where: {
+                userId,
+              },
+            },
     },
   })
-  return story
+
+  if (!story) return null
+
+  return {
+    id: story?.id,
+    title: story?.title,
+    slug: story?.slug,
+    description: story?.description,
+    thumbnail: story?.thumbnail,
+    content: story?.content,
+    min_read: story?.min_read,
+    user: story?.user,
+    likes: story?._count.likes,
+    comments: story?._count.comments,
+    likedByMe: story?.likes?.length > 0,
+    created_at: story?.created_at,
+    updated_at: story?.updated_at,
+  }
 }
 
 export const dynamic = "force-dynamic"
 
 export default async function Story({ params }: { params: { slug: string } }) {
   const story = await getStoryBySlug(params.slug)
+
+  if (!story) {
+    return (
+      <section className="flex h-full flex-col max-w-screen-md mx-auto pt-12 pb-20 min-h-[90vh] gap-8 w-full">
+        <h1 className="text-5xl font-serif font-semibold text-center leading-none">
+          Story not found!
+        </h1>
+      </section>
+    )
+  }
+
   return (
     <section className="flex h-full flex-col max-w-screen-md mx-auto pt-12 pb-20 min-h-[90vh] gap-8 w-full">
-      <div className="flex items-end gap-4">
+      <div className="flex items-end gap-4 w-full">
         <AvatarIcon
           className="h-[2.85rem] w-[2.85rem]"
           name={story?.user.name ?? null}
@@ -47,47 +92,36 @@ export default async function Story({ params }: { params: { slug: string } }) {
               : null}
           </span>
         </div>
-        <span className="text-sm text-muted-foreground">
+        <span className="ml-auto text-sm text-muted-foreground">
           {story?.min_read} min read
         </span>
       </div>
       <h1 className="text-5xl font-serif font-semibold leading-none">
         {story?.title}
       </h1>
-      <p className="text-[1.35rem] max-w-[90%] text-muted-foreground">
-        {story?.description}
-      </p>
-      <div className="flex flex-col border-y border-border py-5 px-2">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TooltipWrapper title="fist bumps">
-                <FistIcon />
-              </TooltipWrapper>
-              5.2k
-            </span>
-            <span className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TooltipWrapper title="comments">
-                <MessageCircle size={20} />
-              </TooltipWrapper>
-              5.2k
-            </span>
-            <span className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TooltipWrapper title="save story">
-                <BookmarkPlus size={20} />
-              </TooltipWrapper>
-            </span>
-          </div>
-          <span className="flex items-center gap-2 text-xs text-muted-foreground">
-            <ShareDropdown />
-          </span>
-        </div>
-      </div>
-      {story?.thumbnail && (story?.thumbnail as any)?.src ? (
+      {!(story?.description as unknown as StoryDescription)?.in_content ? (
+        <p className="text-[1.35rem] max-w-[90%] text-muted-foreground">
+          {(story?.description as unknown as StoryDescription)?.text}
+        </p>
+      ) : null}
+      <Suspense
+        fallback={<Skeleton className="w-full h-full rounded-none py-8 px-2" />}
+      >
+        <StoryStats
+          id={story.id}
+          slug={story.slug}
+          likedByMe={story.likedByMe}
+          likes={story.likes}
+          comments={story.comments}
+        />
+      </Suspense>
+      {story?.thumbnail &&
+      (story?.thumbnail as unknown as StoryImage)?.src &&
+      !(story?.thumbnail as unknown as StoryImage)?.in_content ? (
         <div className="relative flex max-h-[650px] min-h-[40vh] w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
           <Image
-            alt={(story?.thumbnail as any)?.alt}
-            src={(story?.thumbnail as any)?.src}
+            alt={(story?.thumbnail as unknown as StoryImage)?.alt}
+            src={(story?.thumbnail as unknown as StoryImage)?.src}
             sizes="100vw"
             fill
             style={{
@@ -108,7 +142,7 @@ export default async function Story({ params }: { params: { slug: string } }) {
                   domNode.name === "img"
                 ) {
                   return (
-                    <div className="relative my-4 flex max-h-[650px] min-h-[40vh] w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
+                    <div className="relative my-4 flex max-h-[650px] min-h-[40vh] h-full w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
                       <Image
                         src={domNode.attribs.src}
                         alt={domNode.attribs.alt}
@@ -128,24 +162,5 @@ export default async function Story({ params }: { params: { slug: string } }) {
         ) : null}
       </div>
     </section>
-  )
-}
-
-const TooltipWrapper = ({
-  children,
-  title,
-}: {
-  children: ReactNode
-  title: string
-}) => {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className="text-left">{children}</TooltipTrigger>
-        <TooltipContent>
-          <p>{title}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   )
 }

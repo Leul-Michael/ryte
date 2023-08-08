@@ -67,6 +67,7 @@ export function SelectTagsForm({
       setThumbnail({
         src: contentThumbnail.src ?? "",
         alt: contentThumbnail?.alt ?? "",
+        in_content: true,
       })
     }
   }, [contentThumbnail, setThumbnail, thumbnail.src])
@@ -82,7 +83,13 @@ export function SelectTagsForm({
       const res = await saveStory({
         title,
         content,
-        description: description.length > 0 ? description : contentDescripton,
+        description:
+          description.length > 0
+            ? {
+                text: description,
+                in_content: description === contentDescripton ? true : false,
+              }
+            : { text: contentDescripton, in_content: true },
         thumbnail,
         tags: values,
       })
@@ -95,6 +102,7 @@ export function SelectTagsForm({
         setThumbnail({
           src: "",
           alt: "",
+          in_content: false,
         })
         redirect("/")
       } else {
@@ -110,6 +118,7 @@ export function SelectTagsForm({
     setThumbnail({
       src,
       alt,
+      in_content: false,
     })
   }
 

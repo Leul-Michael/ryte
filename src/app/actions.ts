@@ -25,7 +25,10 @@ export async function saveStory({
 }: {
   title: string
   content: string
-  description: string
+  description: {
+    text: string
+    in_content: boolean
+  }
   thumbnail?: any
   tags: string[]
 }) {
@@ -128,4 +131,39 @@ export async function toggleFollwoTag(tagId: string) {
 
   revalidatePath("/tag")
   return { addedFollow }
+}
+
+export async function toggleLikeStory(storyId: string, storySlug: string) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const data = {
+    userId,
+    storyId,
+  }
+
+  const likedStory = await prisma.like.findUnique({
+    where: {
+      userId_storyId: data,
+    },
+  })
+
+  let addedLike
+
+  if (likedStory == null) {
+    await prisma.like.create({
+      data,
+    })
+    addedLike = true
+  } else {
+    await prisma.like.delete({
+      where: {
+        userId_storyId: data,
+      },
+    })
+    addedLike = false
+  }
+
+  revalidatePath(`/story/${storySlug}`)
+  return { addedLike }
 }
