@@ -1,23 +1,71 @@
-import prisma from "@/lib/prisma"
+"use client"
+
 import StoryExcerpt from "./excerpts/story-excerpt"
+import { Button } from "./ui/button"
+import Link from "next/link"
+import { Story } from "../../types"
+import { fetcher } from "@/lib/utils"
+import useSWRInfinite from "swr/infinite"
+import StorySkeleton from "./skeletons/story-skeleton"
+import useLastPostRef from "@/hooks/useLastpostRef"
+import { useMemo } from "react"
 
-async function getStories(tag?: string) {
-  const stories = await prisma.story.findMany({
-    where: {
-      tags: {
-        some: {
-          title: { contains: tag, mode: "insensitive" },
-        },
-      },
-    },
-    include: {
-      user: true,
-      tags: true,
-    },
-  })
+// async function getStories(tag?: string) {
+//   const session = await auth()
+//   const userId = session?.user?.id as string
 
-  return stories
-}
+//   let stories = []
+
+//   if (!tag) {
+//     const tags = await prisma.tag.findMany({
+//       where: {
+//         followers: {
+//           some: {
+//             id: userId,
+//           },
+//         },
+//       },
+//     })
+
+//     stories = await prisma.story.findMany({
+//       where: {
+//         tags: {
+//           some: {
+//             id: {
+//               in: [...tags.map((t) => t.id)],
+//             },
+//           },
+//         },
+//       },
+//       include: {
+//         user: true,
+//         tags: true,
+//       },
+//       orderBy: {
+//         updated_at: "desc",
+//       },
+//     })
+//   } else {
+//     stories = await prisma.story.findMany({
+//       where: {
+//         tags: {
+//           some: {
+//             title: { contains: tag, mode: "insensitive" },
+//           },
+//         },
+//       },
+//       include: {
+//         user: true,
+//         tags: true,
+//       },
+//       orderBy: {
+//         updated_at: "desc",
+//       },
+//     })
+//   }
+
+//   return stories
+// }
 
 interface StoriesTimelineProps {
   tag: string
@@ -25,16 +73,94 @@ interface StoriesTimelineProps {
 
 export const dynamic = "force-dynamic"
 
-const StoriesTimeline = async ({ tag }: StoriesTimelineProps) => {
-  const stories = await getStories(tag)
+const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
+  const { data, isLoading, mutate, size, setSize, isValidating } =
+    useSWRInfinite<{
+      stories: Story[]
+      nextCursor: { id: String } | undefined
+    }>((pageIndex, previousPageData) => {
+      if (previousPageData && !previousPageData?.stories?.length) return null // reached the end
+      if (pageIndex === 0) return `/api/story?tag=${tag}`
 
-  return (
-    <div className="w-full grid grid-cols-layout-450 gap-8 h-full">
-      {stories.map((story) => (
-        <StoryExcerpt key={story.id} story={story} />
-      ))}
-    </div>
+      return `/api/story?tag=${tag}&cursor=${previousPageData.nextCursor?.id}`
+    }, fetcher)
+
+  const hasNextPage = useMemo(() => {
+    const nextCursor = data?.find((v, i) => {
+      if (data.length - 1 === i) return v.nextCursor
+    })
+    if (nextCursor) return true
+    return false
+  }, [data])
+
+  const lastPostRef = useLastPostRef(
+    isLoading || isValidating,
+    () => setSize(size + 1),
+    hasNextPage
   )
+
+  let content
+
+  if (isLoading) {
+    content = (
+      <div className="grid md:grid-cols-layout-450 sm:grid-cols-layout-300 grid-cols-layout-250 gap-8 md:gap-16">
+        {[...Array(4).keys()].map((i) => (
+          <StorySkeleton key={i} />
+        ))}
+      </div>
+    )
+  } else if (!data || data[0]?.stories?.length <= 0) {
+    content = (
+      <div className="flex flex-col gap-8">
+        {!tag ? (
+          <p className="text-sm max-w-[500px] w-full text-muted-foreground">
+            Start following some tags to find stories in your feed
+          </p>
+        ) : tag === "following" ? (
+          <p className="text-sm max-w-[500px] w-full text-muted-foreground">
+            No stories found, start following users and read their stories.
+          </p>
+        ) : (
+          <p className="text-sm max-w-[500px] w-full text-muted-foreground">
+            No stories found under this tag, checkout other tags.
+          </p>
+        )}
+
+        <Button
+          variant="outline"
+          asChild
+          className="min-w-[150px] self-start rounded-full"
+        >
+          <Link href={tag === "following" ? "/user" : "/tag"}>
+            Find {tag === "following" ? "Users" : "Tags"}
+          </Link>
+        </Button>
+      </div>
+    )
+  } else {
+    content = (
+      <div className="w-full grid md:grid-cols-layout-450 sm:grid-cols-layout-300 grid-cols-layout-250 gap-8 h-full">
+        {data.map((v) =>
+          v.stories.map((story, i) => {
+            return (
+              <StoryExcerpt
+                ref={i === v.stories.length - 1 ? lastPostRef : null}
+                key={story.id}
+                story={story}
+              />
+            )
+          })
+        )}
+        {!isLoading && isValidating
+          ? [...Array(data[0]?.stories?.length % 2 === 0 ? 2 : 1).keys()].map(
+              (i) => <StorySkeleton key={i} />
+            )
+          : null}
+      </div>
+    )
+  }
+
+  return content
 }
 
 export default StoriesTimeline

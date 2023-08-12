@@ -31,21 +31,24 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
           <Input
             type="text"
             placeholder="Search Ryte"
-            className="min-w-[300px]"
+            className="hidden md:block min-w-[300px]"
           />
         ) : null}
       </div>
-      <ul className="flex gap-4 items-center">
+      <ul className="flex gap-2 md:gap-4 items-center">
         {user ? (
           <>
             {!hideLinks ? (
               <>
-                <Button asChild variant="ghost">
+                <Button asChild variant="ghost" className="h-9 md:h-10">
                   <Link href="/ryte">
                     <PenSquare className="mr-2 h-4 w-4" /> Ryte
                   </Link>
                 </Button>
-                <Button className="rounded-[100%] px-[0.65rem]" variant="ghost">
+                <Button
+                  className="rounded-[100%] px-[0.65rem] md:block hidden"
+                  variant="ghost"
+                >
                   <Bell className="h-[1.2rem] w-[1.2rem]" />
                 </Button>
               </>
@@ -54,11 +57,11 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
           </>
         ) : (
           <>
-            <Button variant="link" asChild>
+            <Button variant="link" asChild className="md:block hidden">
               <Link href="/about">Who we are</Link>
             </Button>
-            <Button variant="link" asChild>
-              <Link href="/create/new">Ryte</Link>
+            <Button variant="link" asChild className="md:block hidden">
+              <Link href="/ryte">Ryte</Link>
             </Button>
             <Button
               variant="link"

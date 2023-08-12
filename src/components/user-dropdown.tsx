@@ -15,7 +15,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import LogoutButton from "./logout-button"
@@ -25,7 +24,7 @@ import AvatarIcon from "./avatar"
 export async function UserDropdown({ user }: HeaderInnerProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
+      <DropdownMenuTrigger className="outline-none hidden md:flex">
         <AvatarIcon
           name={user?.name?.charAt(0) ?? "U"}
           image={user?.image ?? null}
@@ -41,7 +40,10 @@ export async function UserDropdown({ user }: HeaderInnerProps) {
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            <span>Dashboard</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard className="mr-2 h-4 w-4" />
@@ -50,7 +52,6 @@ export async function UserDropdown({ user }: HeaderInnerProps) {
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

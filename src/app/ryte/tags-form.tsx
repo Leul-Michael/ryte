@@ -79,6 +79,7 @@ export function SelectTagsForm({
         variant: "destructive",
       })
     }
+
     startTransition(async () => {
       const res = await saveStory({
         title,

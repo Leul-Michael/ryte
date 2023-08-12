@@ -55,6 +55,8 @@ model User {
   follows   User[]    @relation(name: "Followers")
   comments  Comment[]
   tags      Tag[]
+
+  created_at DateTime @default(now())
 }
 
 model VerificationToken {

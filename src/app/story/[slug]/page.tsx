@@ -10,10 +10,31 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import { cn } from "@/lib/utils"
+import AuthorCard from "./author-card"
+import { Metadata } from "next"
 
 async function getStoryBySlug(slug: string) {
   const session = await auth()
   const userId = session?.user?.id as string
+
+  let savedByMe = null
+
+  if (userId) {
+    savedByMe = await prisma.user.findUnique({
+      where: {
+        id: userId,
+        saved: {
+          hasSome: [slug],
+        },
+      },
+    })
+  }
 
   const story = await prisma.story.findFirst({
     where: {
@@ -27,7 +48,24 @@ async function getStoryBySlug(slug: string) {
       thumbnail: true,
       content: true,
       min_read: true,
-      user: true,
+      user: {
+        include: {
+          _count: {
+            select: {
+              followers: true,
+              follows: true,
+            },
+          },
+          followers:
+            userId == null
+              ? false
+              : {
+                  where: {
+                    id: userId,
+                  },
+                },
+        },
+      },
       created_at: true,
       updated_at: true,
       _count: {
@@ -47,6 +85,7 @@ async function getStoryBySlug(slug: string) {
   if (!story) return null
 
   return {
+    session: session?.user,
     id: story?.id,
     title: story?.title,
     slug: story?.slug,
@@ -58,8 +97,51 @@ async function getStoryBySlug(slug: string) {
     likes: story?._count.likes,
     comments: story?._count.comments,
     likedByMe: story?.likes?.length > 0,
+    savedByMe: savedByMe != null ? true : false,
     created_at: story?.created_at,
     updated_at: story?.updated_at,
+    isAuthor: userId === story.user.id,
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata | undefined> {
+  const story = await getStoryBySlug(params.slug)
+  if (!story) {
+    return
+  }
+
+  const {
+    title,
+    created_at: publishedTime,
+    description,
+    thumbnail,
+    slug,
+    user,
+  } = story
+  // const ogImage = image
+  //   ? `https://leerob.io${image}`
+  //   : `https://leerob.io/og?title=${title}`
+
+  return {
+    title,
+    description: (description as any).text,
+    openGraph: {
+      title,
+      description: (description as any).text,
+      type: "article",
+      publishedTime: new Date(publishedTime).toISOString(),
+      authors: user.name,
+      // url: `https://leerob.io/story/${slug}`,
+      // images: [
+      //   {
+      //     url: ogImage,
+      //   },
+      // ],
+    },
   }
 }
 
@@ -92,24 +174,34 @@ export default async function Story({ params }: { params: { slug: string } }) {
   return (
     <section className="flex h-full flex-col max-w-screen-md mx-auto pt-12 pb-20 min-h-[90vh] gap-8 w-full">
       <div className="flex items-end gap-4 w-full">
-        <AvatarIcon
-          className="h-[2.85rem] w-[2.85rem]"
-          name={story?.user.name ?? null}
-          image={story?.user.image ?? null}
-        />
+        <HoverCard>
+          <HoverCardTrigger>
+            <AvatarIcon
+              className="md:h-[2.85rem] md:w-[2.85rem] h-10 w-10"
+              name={story?.user.name ?? null}
+              image={story?.user.image ?? null}
+            />
+          </HoverCardTrigger>
+          <AuthorCard
+            user={story.user}
+            session={story.session}
+            isAuthor={story.isAuthor}
+            slug={story.slug}
+          />
+        </HoverCard>
         <div className="flex flex-col">
-          <span className="text-xl font-serif">{story?.user.name}</span>
-          <span className="text-sm text-muted-foreground">
+          <span className="md:text-xl font-serif">{story?.user.name}</span>
+          <span className="md:text-sm text-xs text-muted-foreground">
             {story?.created_at
               ? format(new Date(story?.created_at), "MMM dd,yyyy")
               : null}
           </span>
         </div>
-        <span className="ml-auto text-sm text-muted-foreground">
+        <span className="ml-auto md:text-sm text-xs text-muted-foreground">
           {story?.min_read} min read
         </span>
       </div>
-      <h1 className="text-5xl font-serif font-semibold leading-none">
+      <h1 className="text-4xl md:text-5xl font-serif font-semibold leading-[1.1]">
         {story?.title}
       </h1>
       {!(story?.description as unknown as StoryDescription)?.in_content ? (
@@ -121,11 +213,12 @@ export default async function Story({ params }: { params: { slug: string } }) {
         fallback={<Skeleton className="w-full h-full rounded-none py-8 px-2" />}
       >
         <StoryStats
-          id={story.id}
           slug={story.slug}
           likedByMe={story.likedByMe}
+          savedByMe={story.savedByMe}
           likes={story.likes}
           comments={story.comments}
+          session={story.session}
         />
       </Suspense>
       {story?.thumbnail &&
@@ -161,7 +254,7 @@ export default async function Story({ params }: { params: { slug: string } }) {
                         alt={domNode.attribs.alt}
                         fill
                         sizes="100vw"
-                        className="bg-gray-800/40"
+                        className="bg-border/40"
                       />
                     </div>
                   )

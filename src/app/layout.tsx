@@ -19,8 +19,36 @@ const garamond = EB_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: "Ryte",
-  description: "This is just a simple medium clone.",
+  metadataBase: new URL(process.env.NEXTAUTH_URL as string),
+  title: {
+    default: "Explore stories | Ryte",
+    template: "%s | Ryte",
+  },
+  description: "Developer, writer, and creator.",
+  openGraph: {
+    title: "Explore stories",
+    description:
+      "Discover topics, thinking, and expertise from writers on any topic.",
+    url: process.env.NEXTAUTH_URL as string,
+    siteName: "Ryte",
+    locale: "en-US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  // verification: {
+  //   google: '',
+  //   yandex: '',
+  // },
 }
 
 export default function RootLayout({

@@ -1,6 +1,7 @@
 import { JSONContent } from "@tiptap/react"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Comment } from "../../types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -16,6 +17,14 @@ export function slugify(value: string) {
     .replace(/--+/g, "-")
     .replace(/^-+/, "")
     .replace(/-+$/, "")
+}
+
+export function formatNumber(num: number) {
+  return Math.abs(num) < 999
+    ? Math.sign(num) * Math.abs(num)
+    : Math.abs(num) < 999999
+    ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1) as any) + "k"
+    : Math.sign(num) * ((Math.abs(num) / 1000000).toFixed(1) as any) + "m"
 }
 
 // Swr
@@ -53,7 +62,6 @@ export const getThumbnail = (
       return c
     }
   })
-
 
   if (firstImage == null || firstImage.attrs == null)
     return {

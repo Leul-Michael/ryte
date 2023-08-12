@@ -43,6 +43,7 @@ import {
   useShowEditorImgModal,
 } from "@/store/zustand"
 import TiptapImageModal from "./tiptap-image-modal"
+import hljs from "highlight.js"
 import css from "highlight.js/lib/languages/css"
 import js from "highlight.js/lib/languages/javascript"
 import ts from "highlight.js/lib/languages/typescript"

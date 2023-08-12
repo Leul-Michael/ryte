@@ -5,11 +5,29 @@ import { auth } from "@/lib/auth"
 import StoryTags from "@/components/story-tags"
 import StoriesTimeline from "@/components/stories-timeline"
 import { Suspense } from "react"
-import StorySkeleton from "@/components/skeletons/story-skeleton"
 import ForceRefresh from "@/components/force-refresh"
+import prisma from "@/lib/prisma"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const dynamic = "force-dynamic"
 // export const runtime = "edge"
+
+async function getFollowingTags() {
+  const session = await auth()
+  const userId = session?.user?.id as string
+
+  const tags = await prisma.tag.findMany({
+    where: {
+      followers: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+  })
+
+  return tags
+}
 
 export default async function Home({
   searchParams,
@@ -29,26 +47,19 @@ export default async function Home({
 }
 
 async function Authed({ tag }: { tag: string | undefined }) {
+  const tags = await getFollowingTags()
   return (
     <div className="w-full h-full flex flex-col flex-1 py-12 gap-8 overflow-hidden">
-      <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
+      <h1 className="font-serif md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
         Explore Stories
       </h1>
-      <p className="text-xl max-w-[500px] text-muted-foreground">
+      <p className="md:text-xl text-[1.1rem] max-w-[500px] text-muted-foreground">
         Discover topics, thinking, and expertise from writers on any topic.
       </p>
-      <StoryTags search={tag ?? null} />
-      <Suspense
-        fallback={
-          <div className="grid grid-cols-layout-450 gap-8 md:gap-16">
-            {[...Array(4).keys()].map((i) => (
-              <StorySkeleton key={i} />
-            ))}
-          </div>
-        }
-      >
-        <StoriesTimeline tag={tag ?? ""} />
+      <Suspense fallback={<Skeleton className="w-full h-[20px] rounded-md" />}>
+        <StoryTags tags={tags} search={tag ?? null} />
       </Suspense>
+      <StoriesTimeline tag={tag ?? ""} />
     </div>
   )
 }
@@ -57,16 +68,16 @@ function UnAuthed() {
   return (
     <>
       <div className="flex flex-col w-full gap-8">
-        <h1 className="font-serif text-6xl font-semibold capitalize text-accent-foreground">
+        <h1 className="font-serif md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
           <span className="uppercase">Ryte</span> your <i>thoughts!</i>
         </h1>
-        <p className="text-2xl max-w-[500px]">
+        <p className="md:text-2xl text-xl max-w-[500px]">
           Discover stories, thinking, and expertise from writers on any topic.
         </p>
         <Button
           variant="link"
           asChild
-          className="bg-accent-green self-start min-w-[250px] py-6 hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
+          className="bg-accent-green self-start min-w-[150px] md:min-w-[250px] py-6 hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
         >
           <Link href="/auth/login">
             <BookOpen className="mr-2 h-4 w-4" /> Read on Ryte

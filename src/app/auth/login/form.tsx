@@ -2,13 +2,22 @@
 
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { useGoogleAuth } from "../actions"
+import { useGithubAuth, useGoogleAuth } from "../actions"
+import { Github } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 const AuthForm = () => {
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error") ?? null
   const [loginWithGoogle] = useGoogleAuth()
+  const [loginWithGithub] = useGithubAuth()
 
   async function handleGoogleLogin() {
     await loginWithGoogle("login")
+  }
+
+  async function handleGithubLogin() {
+    await loginWithGithub()
   }
 
   return (
@@ -34,6 +43,17 @@ const AuthForm = () => {
               className="mr-4 h-4 w-4"
             />
             Continue using Google
+          </Button>
+        </div>
+        <div className="w-full space-y-2">
+          <Button
+            onClick={handleGithubLogin}
+            disabled
+            variant="outline"
+            className="py-6 text-muted-foreground w-full max-w-[400px]"
+          >
+            <Github className="h-4 w-4 mr-4" />
+            Continue using Github
           </Button>
         </div>
       </div>

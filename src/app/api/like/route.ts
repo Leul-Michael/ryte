@@ -7,20 +7,20 @@ export async function GET(request: Request) {
   const userId = session.user?.id as string
 
   const url = new URL(request.url)
-  const storyId = url.searchParams.get("storyId") ?? ""
+  const storySlug = url.searchParams.get("storySlug") ?? ""
 
   try {
     const likes = await prisma.like.findMany({
       where: {
-        storyId,
+        storySlug,
       },
     })
 
     const isLikedByMe = await prisma.like.findUnique({
       where: {
-        userId_storyId: {
+        userId_storySlug: {
           userId,
-          storyId,
+          storySlug,
         },
       },
     })

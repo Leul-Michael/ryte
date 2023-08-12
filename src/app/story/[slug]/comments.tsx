@@ -6,83 +6,105 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { fetcher } from "@/lib/utils"
-import { Loader2 } from "lucide-react"
-import { useState, useTransition } from "react"
-import useSWR from "swr"
+import { Loader2, Plus } from "lucide-react"
+import { useRef, useState, useTransition } from "react"
+import useSWRInfinite from "swr/infinite"
 import { Comment } from "../../../../types"
 import CommentExcerpt from "@/components/excerpts/comment-excerpt"
 import { saveComment } from "@/app/actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import CommentSkeleton from "@/components/skeletons/comment-skeleton"
+import { Session } from "next-auth/types"
 
 interface CommentsProps {
   slug: string
+  session: Session["user"]
 }
 
-const Comments = ({ slug }: CommentsProps) => {
+const Comments = ({ slug, session }: CommentsProps) => {
+  const commentsRef = useRef<HTMLDivElement | null>(null)
   const [pending, startTransition] = useTransition()
   const [comment, setComment] = useState("")
-  const { data, isLoading } = useSWR(
-    slug ? `/api/comment?slug=${slug}` : null,
-    fetcher,
-    {
-      revalidateOnMount: true,
-    }
-  )
+  const { data, isLoading, mutate, size, setSize, isValidating } =
+    useSWRInfinite<{
+      comments: Comment[]
+      nextCursor: { id: String } | undefined
+    }>((pageIndex, previousPageData) => {
+      if (previousPageData && !previousPageData?.comments?.length) return null // reached the end
+      if (pageIndex === 0) return `/api/comment?slug=${slug}`
+
+      return `/api/comment?slug=${slug}&cursor=${previousPageData.nextCursor?.id}`
+    }, fetcher)
 
   return (
-    <SheetContent>
-      <ScrollArea className="h-[98vh] pb-8">
-        <SheetHeader className="sticky top-0 left-0 bg-background z-[51] pb-2">
-          <SheetTitle>Comments</SheetTitle>
-          <SheetDescription>
-            What do you think about the story?
-          </SheetDescription>
-          <form
-            action={() => {
-              if (comment.length < 2 || !slug) return
-              startTransition(async () => {
-                const res = await saveComment(comment, slug)
-                console.log(res)
-              })
-              setComment("")
-            }}
-            className="flex flex-col gap-4"
-          >
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="resize-y w-full h-[100px] outline-none text-sm py-2 focus:border-border bg-transparent border-b border-border/60"
-              placeholder="comment"
-              maxLength={200}
-            ></textarea>
+    <SheetContent className="h-screen flex flex-col">
+      <SheetHeader className="pb-2">
+        <SheetTitle>Comments</SheetTitle>
+        <SheetDescription>What do you think about the story?</SheetDescription>
+        <form
+          style={{ opacity: !pending || session ? 1 : 0.7 }}
+          action={() => {
+            if (comment.length < 2 || !slug || !session) return
+            startTransition(async () => {
+              await saveComment(comment, slug)
+              mutate()
+            })
+            setComment("")
+            commentsRef.current?.scrollIntoView({
+              block: "end",
+              behavior: "smooth",
+            })
+          }}
+          className="flex flex-col gap-4"
+        >
+          <textarea
+            disabled={pending}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="resize-y w-full h-[100px] outline-none text-sm py-2 focus:border-border bg-transparent border-b border-border/60"
+            placeholder="comment"
+            maxLength={200}
+          ></textarea>
 
+          <Button
+            type="submit"
+            variant="outline"
+            disabled={comment.length < 2 || pending || !session}
+            className="self-start px-8 rounded-full"
+          >
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            Add Comment
+          </Button>
+        </form>
+      </SheetHeader>
+      <ScrollArea ref={commentsRef} className="h-full">
+        <div className="flex flex-col gap-2">
+          {isLoading
+            ? [...Array(2).keys()].map((i) => <CommentSkeleton key={i} />)
+            : data?.map((v) => {
+                return v.comments.length > 0 ? (
+                  v?.comments?.map((comment: Comment, i) => (
+                    <CommentExcerpt key={comment.id} comment={comment} />
+                  ))
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Be the first to comment on the story.
+                  </p>
+                )
+              })}
+          {isValidating ? <CommentSkeleton /> : null}
+          {data?.find((v, i) => {
+            if (data.length - 1 === i) return v.nextCursor
+          }) ? (
             <Button
-              type="submit"
+              disabled={isLoading || isValidating}
               variant="outline"
-              disabled={comment.length < 2 || pending}
-              className="self-start px-8 rounded-full"
+              onClick={() => setSize(size + 1)}
+              className="mx-auto group mb-1 rounded-full w-[35px] h-[35px] p-0"
             >
-              {pending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Add Comment
+              <Plus size={20} className="opacity-70 group-hover:opacity-100" />
             </Button>
-          </form>
-        </SheetHeader>
-        <div className="flex flex-col gap-2 py-4">
-          {isLoading ? (
-            [...Array(2).keys()].map((i) => <CommentSkeleton key={i} />)
-          ) : (
-            <>
-              {data?.myComments?.map((comment: Comment) => (
-                <CommentExcerpt key={comment.id} comment={comment} />
-              ))}
-              {data?.comments.map((comment: Comment) => (
-                <CommentExcerpt key={comment.id} comment={comment} />
-              ))}
-            </>
-          )}
+          ) : null}
         </div>
       </ScrollArea>
     </SheetContent>

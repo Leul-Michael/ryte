@@ -33,7 +33,7 @@ export async function saveStory({
   tags: string[]
 }) {
   const session = await getSession()
-  const userId = session.user?.id as string
+  const userId = session?.user?.id as string
 
   const min_read = readingTime(content)
 
@@ -130,21 +130,74 @@ export async function toggleFollwoTag(tagId: string) {
   }
 
   revalidatePath("/tag")
+  revalidatePath("/")
   return { addedFollow }
 }
 
-export async function toggleLikeStory(storyId: string, storySlug: string) {
+export async function toggleFollwoUser(userId: string, path: string) {
+  const session = await getSession()
+  const currentUserId = session.user?.id as string
+
+  const followsUser = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      followers: {
+        some: {
+          id: currentUserId,
+        },
+      },
+    },
+  })
+
+  let addedFollow
+
+  if (followsUser == null) {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        followers: {
+          connect: {
+            id: currentUserId,
+          },
+        },
+      },
+    })
+    addedFollow = true
+  } else {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        followers: {
+          disconnect: {
+            id: currentUserId,
+          },
+        },
+      },
+    })
+    addedFollow = false
+  }
+
+  revalidatePath(path)
+  revalidatePath("/")
+  return { addedFollow }
+}
+
+export async function toggleLikeStory(storySlug: string) {
   const session = await getSession()
   const userId = session?.user?.id as string
 
   const data = {
     userId,
-    storyId,
+    storySlug,
   }
 
   const likedStory = await prisma.like.findUnique({
     where: {
-      userId_storyId: data,
+      userId_storySlug: data,
     },
   })
 
@@ -158,7 +211,7 @@ export async function toggleLikeStory(storyId: string, storySlug: string) {
   } else {
     await prisma.like.delete({
       where: {
-        userId_storyId: data,
+        userId_storySlug: data,
       },
     })
     addedLike = false
@@ -168,17 +221,61 @@ export async function toggleLikeStory(storyId: string, storySlug: string) {
   return { addedLike }
 }
 
-export async function saveComment(comment: string, storyId: string) {
+export async function saveComment(comment: string, storySlug: string) {
   const session = await getSession()
   const userId = session?.user?.id as string
 
   const newComment = await prisma.comment.create({
     data: {
       userId,
-      storyId,
+      storySlug,
       comment,
     },
   })
 
+  revalidatePath(`/story/${storySlug}`)
   return { comment: newComment }
+}
+
+export async function bookmarkStory(storySlug: string) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const isBookmarked = await prisma.user.findUnique({
+    where: {
+      id: userId,
+      saved: {
+        hasSome: [storySlug],
+      },
+    },
+  })
+
+  let savedStory
+
+  if (isBookmarked == null) {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        saved: {
+          push: storySlug,
+        },
+      },
+    })
+    savedStory = true
+  } else {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        saved: isBookmarked.saved.filter((v) => v !== storySlug),
+      },
+    })
+    savedStory = false
+  }
+
+  revalidatePath(`/story/${storySlug}`)
+  return { savedStory }
 }

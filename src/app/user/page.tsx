@@ -1,37 +1,37 @@
-import TagSkeleton from "@/components/skeletons/tag-skeleton"
 import { Suspense } from "react"
 import Search from "./search"
-import Tags from "./tags"
+import Users from "./users"
+import UserSkeleton from "@/components/skeletons/user-skeleton"
 
 export const dynamic = "force-dynamic"
 
-export default async function Tag({
+export default async function UsersPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const title = typeof searchParams.q === "string" ? searchParams.q : undefined
+  const name = typeof searchParams.q === "string" ? searchParams.q : undefined
 
   return (
     <section className="relative flex h-full flex-col min-h-[90vh] w-full py-10">
       <div className="w-full h-full flex flex-col flex-1 py-5 gap-8">
         <h1 className="font-serif text-center md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
-          Tags
+          Users
         </h1>
         <p className="text-center md:text-xl text-[1.1rem] max-w-[500px] mx-auto w-full text-muted-foreground">
-          Discover topics, thinking, and expertise from writers on any topic.
+          Discover Authors and Story tellers on any topic.
         </p>
-        <Search search={title} />
+        <Search search={name} />
         <Suspense
           fallback={
             <div className="grid grid-cols-layout-250 gap-8 py-6">
               {[...Array(8).keys()].map((i) => (
-                <TagSkeleton key={i} />
+                <UserSkeleton key={i} />
               ))}
             </div>
           }
         >
-          <Tags title={title ?? ""} />
+          <Users name={name ?? ""} />
         </Suspense>
       </div>
     </section>
