@@ -41,6 +41,9 @@ export const {
     authorized({ auth }) {
       return !!auth?.user // this ensures there is a logged in user for -every- request
     },
+    signIn({ user, account, credentials, email, profile }) {
+      return true
+    },
   },
   pages: {
     signIn: "/auth/login",
