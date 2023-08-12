@@ -32,6 +32,7 @@ async function getUser(id: string) {
                 id: userId,
               },
             },
+      created_at: true,
     },
   })
 
@@ -46,6 +47,7 @@ async function getUser(id: string) {
     follows: user._count.follows,
     stories: user._count.stories,
     followedByMe: user.followers?.length > 0,
+    created_at: user.created_at,
   }
 }
 
@@ -89,10 +91,10 @@ export default async function UserPage({
             className="bg-border/40 object-cover"
           />
         </div>
-        <div className="flex md:flex-row flex-col md:items-center gap-4 max-w-[900px] px-3 mx-auto w-full">
+        <div className="flex md:flex-row flex-col md:items-start gap-4 max-w-[900px] px-3 mx-auto w-full">
           <div className="relative flex md:w-32 h-4 w-20">
             <AvatarIcon
-              className="absolute border-[3px] border-background -top-12 md:-top-20 left-0 md:w-28 md:h-28 w-16 h-16"
+              className="absolute border-[3px] border-background -top-12 md:-top-14 left-0 md:w-28 md:h-28 w-16 h-16"
               name={user.name}
               image={user.image}
             />
@@ -109,7 +111,7 @@ export default async function UserPage({
             <div className="flex items-center flex-wrap gap-4">
               <span className="flex items-center text-sm">
                 <Calendar className="w-4 h-4 mr-2 text-muted-foreground" />
-                {/* Joined  {format(new Date(user.), "MMM dd,yyyy")} */}
+                Joined {format(new Date(user.created_at), "MMM dd, yyyy")}
               </span>
               <span className="flex items-center text-sm">
                 <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -119,6 +121,13 @@ export default async function UserPage({
                 <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
                 Addis Ababa
               </span>
+            </div>
+            <div className="flex flex-col gap-1 py-4">
+              <span className="text-muted-foreground text-sm">Bio</span>
+              <p className="max-w-[600px]">
+                Joseph James Rogan is an American UFC color commentator,
+                podcaster, comedian, and former television presenter.
+              </p>
             </div>
           </div>
         </div>

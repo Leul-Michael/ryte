@@ -60,7 +60,8 @@ const AuthorCard = ({ isAuthor, user, session, slug }: AuthorCardProps) => {
             </div>
           </div>
           <p className="text-xs">
-            The React Framework - created and maintained by @vercel.
+            Joseph James Rogan is an American UFC color commentator, podcaster,
+            comedian, and former television presenter.
           </p>
           {isAuthor || !session ? null : (
             <Button
