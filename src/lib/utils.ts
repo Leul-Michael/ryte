@@ -1,20 +1,19 @@
 import { JSONContent } from "@tiptap/react"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Comment } from "../../types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function slugify(value: string) {
+export function slugify(value: string, username?: boolean) {
   return value
     .toString()
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, "-")
+    .replace(/\s+/g, username ? "_" : "-")
     .replace(/[^\w-]+/g, "")
-    .replace(/--+/g, "-")
+    .replace(/--+/g, username ? "_" : "-")
     .replace(/^-+/, "")
     .replace(/-+$/, "")
 }

@@ -19,6 +19,7 @@ interface UserExcerptProps {
     followers: number
     follows: number
     stories: number
+    loggedIn: boolean
   }
 }
 
@@ -32,7 +33,7 @@ const UserExcerpt = ({ user }: UserExcerptProps) => {
 
   return (
     <Link
-      href={`/user/${user.id}`}
+      href={`/user/${user.username}`}
       className="flex flex-col justify-between border border-border rounded-md px-5 py-4 gap-6"
     >
       <div className="flex items-center gap-4">
@@ -62,8 +63,9 @@ const UserExcerpt = ({ user }: UserExcerptProps) => {
           {formatNumber(user?.stories)}
         </span>
         <Button
-          disabled={pending}
-          onClick={async () => {
+          disabled={pending || !user.loggedIn}
+          onClick={async (e) => {
+            e.stopPropagation()
             addFollowing(!following)
             startTransition(async () => {
               await toggleFollwoUser(user.id, `/user`)

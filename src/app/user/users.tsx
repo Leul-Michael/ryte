@@ -19,6 +19,7 @@ async function getUsers(name?: string) {
       name: true,
       email: true,
       image: true,
+      username: true,
       _count: {
         select: { followers: true, stories: true, follows: true },
       },
@@ -42,10 +43,12 @@ async function getUsers(name?: string) {
       name: user.name,
       email: user.email,
       image: user.image,
+      username: user.username,
       followers: user._count.followers,
       follows: user._count.follows,
       stories: user._count.stories,
       followedByMe: user.followers?.length > 0,
+      loggedIn: session?.user ? true : false,
     }
   })
 

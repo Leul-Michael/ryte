@@ -39,10 +39,10 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  username      String    @unique @default(cuid())
+  id            String        @id @default(cuid())
+  username      String        @unique @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   bio           String?
@@ -50,7 +50,8 @@ model User {
   socials       Json?
   accounts      Account[]
   sessions      Session[]
-  role          Role      @default(BASIC)
+  role          Role          @default(BASIC)
+  status        ACCOUNTSTATUS @default(ACTIVE)
 
   stories   Story[]
   likes     Like[]
@@ -129,4 +130,9 @@ model Tag {
 enum Role {
   BASIC
   ADMIN
+}
+
+enum ACCOUNTSTATUS {
+  ACTIVE
+  BLOCKED
 }

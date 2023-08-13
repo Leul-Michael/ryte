@@ -5,6 +5,7 @@ import { Session } from "next-auth/types"
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { readingTime, slugify } from "@/lib/utils"
+import { User } from "../../types"
 
 export async function getSession(): Promise<Session> {
   const session = await auth()
@@ -278,4 +279,39 @@ export async function bookmarkStory(storySlug: string) {
 
   revalidatePath(`/story/${storySlug}`)
   return { savedStory }
+}
+
+export async function isUsedUsername(name: string) {
+  let username = slugify(name, true)
+
+  if (!username.startsWith("@")) {
+    username = "@" + username
+  }
+
+  const usernameExists = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+    select: {
+      username: true,
+    },
+  })
+
+  return usernameExists
+}
+
+export async function updateprofile(profile: Partial<User>) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const res = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      ...profile,
+    },
+  })
+
+  return res
 }

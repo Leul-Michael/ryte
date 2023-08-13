@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import LogoutButton from "./logout-button"
+import LogoutButton from "./ui/logout-button"
 import { HeaderInnerProps } from "./header-inner"
 import AvatarIcon from "./avatar"
 

@@ -8,19 +8,20 @@ import { formatNumber } from "@/lib/utils"
 import { Calendar, Mail, MapPin } from "lucide-react"
 import { format } from "date-fns"
 
-async function getUser(id: string) {
+async function getUser(username: string) {
   const session = await auth()
   const userId = session?.user?.id as string
 
   const user = await prisma.user.findUnique({
     where: {
-      id,
+      username,
     },
     select: {
       id: true,
       name: true,
       email: true,
       image: true,
+      username: true,
       _count: {
         select: { followers: true, stories: true, follows: true },
       },
@@ -43,6 +44,7 @@ async function getUser(id: string) {
     name: user.name,
     email: user.email,
     image: user.image,
+    username: user.username,
     followers: user._count.followers,
     follows: user._count.follows,
     stories: user._count.stories,
