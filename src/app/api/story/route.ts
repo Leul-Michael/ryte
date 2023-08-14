@@ -40,7 +40,7 @@ export async function GET(request: Request) {
           tags: true,
         },
         orderBy: {
-          updated_at: "desc",
+          created_at: "desc",
         },
         take: Number(limit) + 1,
         cursor: cursor ? { id: cursor } : undefined,
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
           tags: true,
         },
         orderBy: {
-          updated_at: "desc",
+          created_at: "desc",
         },
         take: Number(limit) + 1,
         cursor: cursor ? { id: cursor } : undefined,
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
           tags: true,
         },
         orderBy: {
-          updated_at: "desc",
+          created_at: "desc",
         },
         take: Number(limit) + 1,
         cursor: cursor ? { id: cursor } : undefined,

@@ -1,6 +1,7 @@
 import { cn, formatNumber } from "@/lib/utils"
 import { User } from "../../../../types"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 type OverviewProps = {
   user: User & {
@@ -73,12 +74,11 @@ const Overview = ({ user }: OverviewProps) => {
           <div className="flex items-center gap-8">
             <span className="text-muted-foreground text-sm">Stories</span>
             <Button
-              size="sm"
-              disabled
+              asChild
               variant="outline"
               className="self-start rounded-full py-[0.3rem] px-4 text-xs h-auto"
             >
-              View
+              <Link href="/profile/my_story">View</Link>
             </Button>
           </div>
           <p className="max-w-[600px]">{formatNumber(user.stories)}</p>

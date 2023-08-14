@@ -10,16 +10,11 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import { cn } from "@/lib/utils"
+import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card"
 import AuthorCard from "./author-card"
 import { Metadata } from "next"
 
-async function getStoryBySlug(slug: string) {
+export async function getStoryBySlug(slug: string) {
   const session = await auth()
   const userId = session?.user?.id as string
 

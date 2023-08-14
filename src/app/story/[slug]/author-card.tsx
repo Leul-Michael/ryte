@@ -60,8 +60,9 @@ const AuthorCard = ({ isAuthor, user, session, slug }: AuthorCardProps) => {
             </div>
           </div>
           <p className="text-xs">
-            Joseph James Rogan is an American UFC color commentator, podcaster,
-            comedian, and former television presenter.
+            {user.bio && user.bio?.length > 75
+              ? user.bio.slice(0, 75) + " ..."
+              : user.bio}
           </p>
           {isAuthor || !session ? null : (
             <Button

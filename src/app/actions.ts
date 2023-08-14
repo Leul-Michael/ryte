@@ -84,6 +84,86 @@ export async function saveStory({
   }
 }
 
+export async function updateStory({
+  id,
+  title,
+  content,
+  description,
+  thumbnail,
+  tags,
+}: {
+  id: string
+  title: string
+  content: string
+  description: {
+    text: string
+    in_content: boolean
+  }
+  thumbnail?: any
+  tags: string[]
+}) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const min_read = readingTime(content)
+
+  let slug = slugify(`${title}`)
+  let i = 0
+
+  while (true) {
+    const checkSlug = await prisma.story.findFirst({
+      where: {
+        slug,
+      },
+    })
+    if (checkSlug == null || (checkSlug.id === id && checkSlug.slug === slug))
+      break
+    i += 1
+    slug = slugify(`${title}-${i}`)
+  }
+  slug = slug.toLowerCase()
+
+  try {
+    const currentstory = await prisma.story.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (currentstory?.userId !== userId) {
+      return {
+        success: false,
+        msg: "You're not allowed to perform this action!",
+      }
+    }
+
+    const story = await prisma.story.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        content,
+        description,
+        thumbnail: thumbnail ?? undefined,
+        slug,
+        min_read,
+        tags: {
+          connect: tags.map((t) => ({ id: t })),
+        },
+      },
+    })
+
+    revalidatePath("/")
+    return {
+      success: true,
+      msg: `Story ${story.title} updated successfully`,
+    }
+  } catch (e: any) {
+    console.log(e)
+  }
+}
+
 export async function toggleFollwoTag(tagId: string) {
   const session = await getSession()
   const userId = session.user?.id as string

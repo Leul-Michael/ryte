@@ -1,4 +1,4 @@
-import { Tag } from "../../../types"
+import { StoryDescription, StoryImage, Tag } from "../../../../../types"
 import {
   Dispatch,
   SetStateAction,
@@ -8,16 +8,15 @@ import {
 } from "react"
 import { ImageIcon, Loader2 } from "lucide-react"
 
-import { fetcher, getDescription, getThumbnail } from "@/lib/utils"
+import { fetcher } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-import { saveStory } from "@/app/actions"
-import { redirect } from "next/navigation"
+import { updateStory } from "@/app/actions"
+import { redirect, useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import Wrapper from "@/components/ui/wrapper"
 import SelectTags from "@/components/select-tags"
 import {
-  useContentJson,
   useSetContentJson,
   useSetShowEditorImgModal,
   useSetStoryThumbnail,
@@ -33,50 +32,57 @@ import { Skeleton } from "@/components/ui/skeleton"
 interface SelectTagsFormProps {
   showModal: boolean
   setShowModal: Dispatch<SetStateAction<boolean>>
+  id: string
   title: string
   content: string
+  initialDescription: StoryDescription
+  initialThumbnail: StoryImage
+  tags: Tag[]
   clear: () => void
 }
 
 export function SelectTagsForm({
   showModal,
   setShowModal,
+  id,
   title,
   content,
+  initialDescription,
+  initialThumbnail,
+  tags,
   clear,
 }: SelectTagsFormProps) {
   const { data, isLoading } = useSWR<{
     tags: Tag[]
   }>(`/api/tag`, fetcher)
 
+  const router = useRouter()
   const { toast } = useToast()
   const [pending, startTransition] = useTransition()
 
-  const contentJson = useContentJson()
   const setContentJson = useSetContentJson()
-
-  const contentDescripton = getDescription(contentJson)
-  const contentThumbnail = getThumbnail(contentJson)
 
   const showImageModal = useShowEditorImgModal()
   const setShowImageModal = useSetShowEditorImgModal()
   const thumbnail = useStoryThumbnail()
   const setThumbnail = useSetStoryThumbnail()
 
-  const [description, setDescription] = useState<string>(contentDescripton)
-  const [values, setValues] = useState<string[]>([])
+  const [description, setDescription] = useState<string>(
+    initialDescription.text
+  )
+  const [values, setValues] = useState<string[]>(tags.map((t) => t.id) ?? [])
 
   useEffect(() => {
-    if (!thumbnail.src && contentThumbnail.src) {
+    if (initialThumbnail && initialThumbnail.src) {
       setThumbnail({
-        src: contentThumbnail.src ?? "",
-        alt: contentThumbnail?.alt ?? "",
-        in_content: true,
+        src: initialThumbnail.src ?? "",
+        alt: initialThumbnail?.alt ?? "",
+        in_content: initialThumbnail.in_content,
       })
     }
-  }, [contentThumbnail, setThumbnail, thumbnail.src])
+  }, [initialThumbnail, setThumbnail])
 
-  const createStory = async () => {
+  const handleUpdateStory = async () => {
     if (!title || !content) {
       toast({
         title: "Please add required fields!",
@@ -85,20 +91,22 @@ export function SelectTagsForm({
     }
 
     startTransition(async () => {
-      const res = await saveStory({
+      const res = await updateStory({
+        id,
         title,
         content,
         description:
           description.length > 0
             ? {
                 text: description,
-                in_content: description === contentDescripton ? true : false,
+                in_content:
+                  description === initialDescription.text ? true : false,
               }
-            : { text: contentDescripton, in_content: true },
+            : { text: initialDescription.text, in_content: true },
         thumbnail,
         tags: values,
       })
-      if (res?.story) {
+      if (res?.success) {
         toast({
           title: res?.msg ?? "Operation successfull!",
         })
@@ -109,10 +117,10 @@ export function SelectTagsForm({
           alt: "",
           in_content: false,
         })
-        redirect("/")
+        router.push("/profile/my_story")
       } else {
         toast({
-          title: "Someting went wrong, Try again!",
+          title: res?.msg ?? "Someting went wrong, Try again!",
           variant: "destructive",
         })
       }
@@ -140,7 +148,7 @@ export function SelectTagsForm({
       <Wrapper show={showModal} setShow={setShowModal} pending={pending}>
         <ScrollArea className="w-full max-w-[1024px] relative my-5 overflow-auto bg-background border border-border rounded-md h-screen">
           <form
-            action={createStory}
+            action={handleUpdateStory}
             className="flex flex-col gap-8 w-full  p-3 md:p-6"
           >
             <div className="flex items-start gap-8 flex-wrap w-full">
@@ -233,7 +241,9 @@ export function SelectTagsForm({
 
             <Button
               type="submit"
-              disabled={values.length < 2 || pending || !description}
+              disabled={
+                values.length < 2 || pending || !description || isLoading
+              }
               className="self-start px-8 bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
             >
               {pending ? (

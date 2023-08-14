@@ -3,7 +3,7 @@ import { formatDistanceToNowStrict } from "date-fns"
 import { parseISO } from "date-fns/fp"
 
 type TimeagoProps = {
-  timestamp: string
+  timestamp: Date | string
   prefix?: string
   noprefix?: boolean
   className?: string
@@ -12,7 +12,7 @@ type TimeagoProps = {
 const Timeago = ({ timestamp, prefix, noprefix, className }: TimeagoProps) => {
   let time = ""
   if (timestamp) {
-    const parseDate = parseISO(timestamp)
+    const parseDate = parseISO(new Date(timestamp).toISOString())
     const timePeriod = formatDistanceToNowStrict(parseDate)
 
     time = prefix

@@ -95,6 +95,9 @@ const Tiptap = ({ content, setContent }: TiptapProps) => {
         class: "p-2 md:p-4 flex flex-col w-full focus:outline-none",
       },
     },
+    onCreate({ editor }) {
+      setContentJson(editor?.getJSON())
+    },
     onUpdate: ({ editor }) => {
       setContent(editor?.getHTML())
       setContentJson(editor?.getJSON())

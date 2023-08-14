@@ -49,13 +49,15 @@ export default async function Home({
 async function Authed({ tag }: { tag: string | undefined }) {
   const tags = await getFollowingTags()
   return (
-    <div className="w-full h-full flex flex-col flex-1 py-12 gap-8 overflow-hidden">
-      <h1 className="font-serif md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
-        Explore Stories
-      </h1>
-      <p className="md:text-xl text-[1.1rem] max-w-[500px] text-muted-foreground">
-        Discover topics, thinking, and expertise from writers on any topic.
-      </p>
+    <div className="w-full h-full flex flex-col flex-1 py-12 gap-16 overflow-hidden">
+      <div className="flex flex-col gap-8">
+        <h1 className="font-serif md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
+          Explore Stories
+        </h1>
+        <p className="md:text-xl text-[1.1rem] max-w-[500px] text-muted-foreground">
+          Discover topics, thinking, and expertise from writers on any topic.
+        </p>
+      </div>
       <Suspense fallback={<Skeleton className="w-full h-[20px] rounded-md" />}>
         <StoryTags tags={tags} search={tag ?? null} />
       </Suspense>

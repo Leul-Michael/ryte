@@ -18,8 +18,8 @@ export interface Story {
   slug: string
   userId: string
   min_read: number
-  updated_at: string
-  created_at: string
+  updated_at: Date
+  created_at: Date
 }
 
 export interface Comment {
@@ -27,8 +27,8 @@ export interface Comment {
   comment: string
   user: User
   storyId: string
-  updated_at: Date
-  created_at: Date
+  updated_at: string
+  created_at: string
 }
 
 export interface StoryDescription {

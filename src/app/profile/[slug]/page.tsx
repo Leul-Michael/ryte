@@ -11,6 +11,7 @@ import Navbar from "./nav-bar"
 import Overview from "./overview"
 import UpdateForm from "./update-form"
 import Settings from "./settings"
+import { Metadata } from "next"
 
 async function getMe() {
   const session = await auth()
@@ -63,6 +64,11 @@ async function getMe() {
     followedByMe: user.followers?.length > 0,
     created_at: user.created_at,
   }
+}
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "Manage your profile",
 }
 
 export default async function UserPage({

@@ -7,11 +7,24 @@ import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { SelectTagsForm } from "./tags-form"
 import { cn } from "@/lib/utils"
+import { StoryDescription, StoryImage, Tag } from "../../../../../types"
 
-const Form = () => {
+type FormProps = {
+  story: {
+    id: string
+    title: string
+    slug: string
+    description: StoryDescription
+    thumbnail: StoryImage
+    tags: Tag[]
+    content: string
+  }
+}
+
+const Form = ({ story }: FormProps) => {
   const { toast } = useToast()
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
+  const [title, setTitle] = useState(story.title ?? "")
+  const [content, setContent] = useState(story.content ?? "")
   const [showTagsModal, setShowTagModals] = useState(false)
 
   const noContent =
@@ -42,8 +55,12 @@ const Form = () => {
         <SelectTagsForm
           showModal={showTagsModal}
           setShowModal={setShowTagModals}
+          id={story.id}
           title={title}
           content={content}
+          initialDescription={story.description}
+          initialThumbnail={story.thumbnail}
+          tags={story.tags}
           clear={clearInputs}
         />
       ) : null}

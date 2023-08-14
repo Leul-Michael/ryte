@@ -14,7 +14,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Dispatch, SetStateAction, useState } from "react"
-import { Tag } from "../../../types"
+import { Tag } from "../../types"
 import { cn } from "@/lib/utils"
 
 interface SelectTagsProps {

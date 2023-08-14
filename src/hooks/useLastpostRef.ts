@@ -8,7 +8,7 @@ export default function useLastPostRef(
   const intObserver = useRef<IntersectionObserver | null>(null)
 
   const lastPostRef = useCallback(
-    (node: HTMLAnchorElement) => {
+    (node: HTMLDivElement) => {
       if (isLoading) return
 
       if (intObserver.current) intObserver.current.disconnect()

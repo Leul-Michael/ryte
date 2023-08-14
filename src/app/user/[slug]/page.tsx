@@ -9,6 +9,7 @@ import { Calendar, Mail, MapPin } from "lucide-react"
 import { format } from "date-fns"
 import UserStories from "./user-stories"
 import FollowButton from "./follow-button"
+import { Metadata } from "next"
 
 async function getUser(username: string) {
   const session = await auth()
@@ -55,6 +56,21 @@ async function getUser(username: string) {
     isAuthor: user.id === session?.user?.id,
     followedByMe: user.followers?.length > 0,
     created_at: user.created_at,
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata | undefined> {
+  const user = await getUser(decodeURIComponent(params.slug))
+
+  if (!user) return {}
+
+  return {
+    title: user.name,
+    description: user.bio,
   }
 }
 
@@ -117,7 +133,9 @@ export default async function UserPage({
                   variant="outline"
                   className="rounded-full  py-2 h-auto text-xs"
                 >
-                  <Link href={`/profile/${user.username}`}>Profile</Link>
+                  <Link href={`/profile/${user.username}?tab=overview`}>
+                    Profile
+                  </Link>
                 </Button>
               ) : (
                 <FollowButton

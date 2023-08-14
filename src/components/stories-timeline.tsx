@@ -1,6 +1,5 @@
 "use client"
 
-import StoryExcerpt from "./excerpts/story-excerpt"
 import { Button } from "./ui/button"
 import Link from "next/link"
 import { Story } from "../../types"
@@ -9,69 +8,11 @@ import useSWRInfinite from "swr/infinite"
 import StorySkeleton from "./skeletons/story-skeleton"
 import useLastPostRef from "@/hooks/useLastpostRef"
 import { useMemo } from "react"
-
-// async function getStories(tag?: string) {
-//   const session = await auth()
-//   const userId = session?.user?.id as string
-
-//   let stories = []
-
-//   if (!tag) {
-//     const tags = await prisma.tag.findMany({
-//       where: {
-//         followers: {
-//           some: {
-//             id: userId,
-//           },
-//         },
-//       },
-//     })
-
-//     stories = await prisma.story.findMany({
-//       where: {
-//         tags: {
-//           some: {
-//             id: {
-//               in: [...tags.map((t) => t.id)],
-//             },
-//           },
-//         },
-//       },
-//       include: {
-//         user: true,
-//         tags: true,
-//       },
-//       orderBy: {
-//         updated_at: "desc",
-//       },
-//     })
-//   } else {
-//     stories = await prisma.story.findMany({
-//       where: {
-//         tags: {
-//           some: {
-//             title: { contains: tag, mode: "insensitive" },
-//           },
-//         },
-//       },
-//       include: {
-//         user: true,
-//         tags: true,
-//       },
-//       orderBy: {
-//         updated_at: "desc",
-//       },
-//     })
-//   }
-
-//   return stories
-// }
+import StoryExcerpt from "./excerpts/story-excerpt"
 
 interface StoriesTimelineProps {
   tag: string
 }
-
-export const dynamic = "force-dynamic"
 
 const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
   const { data, isLoading, mutate, size, setSize, isValidating } =
@@ -103,8 +44,8 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
 
   if (isLoading) {
     content = (
-      <div className="grid md:grid-cols-layout-450 sm:grid-cols-layout-300 grid-cols-layout-250 gap-8 md:gap-16">
-        {[...Array(4).keys()].map((i) => (
+      <div className="grid grid-cols-layout-300 gap-x-16 gap-y-20">
+        {[...Array(3).keys()].map((i) => (
           <StorySkeleton key={i} />
         ))}
       </div>
@@ -139,7 +80,7 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
     )
   } else {
     content = (
-      <div className="w-full grid md:grid-cols-layout-450 sm:grid-cols-layout-300 grid-cols-layout-250 gap-8 h-full">
+      <div className="w-full grid grid-cols-layout-300 gap-20 h-full">
         {data.map((v) =>
           v.stories.map((story, i) => {
             return (
@@ -152,9 +93,15 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
           })
         )}
         {!isLoading && isValidating
-          ? [...Array(data[0]?.stories?.length % 2 === 0 ? 2 : 1).keys()].map(
-              (i) => <StorySkeleton key={i} />
-            )
+          ? [
+              ...Array(
+                data[0]?.stories?.length % 2 === 0
+                  ? 1
+                  : data[0]?.stories?.length % 3 === 0
+                  ? 3
+                  : 2
+              ).keys(),
+            ].map((i) => <StorySkeleton key={i} />)
           : null}
       </div>
     )

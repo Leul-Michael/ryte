@@ -32,7 +32,7 @@ const StoryTags = ({ tags, search }: StoryTagsProps) => {
   return (
     <ScrollArea className="w-full overflow-auto h-full hide-scroll">
       <ScrollBar orientation="horizontal" />
-      <nav className="flex items-center justify-normal w-full min-w-[500px] h-full overflow-hidden border-b border-border">
+      <nav className="flex items-center justify-normal w-full min-w-[500px] h-full overflow-hidden border-b border-border/50">
         <LayoutGroup>
           <Link role="tab" className="hover:bg-transparent px-0" href="/tag">
             <Plus size={20} />
