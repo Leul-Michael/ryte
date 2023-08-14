@@ -62,6 +62,8 @@ model User {
   tags      Tag[]
 
   created_at DateTime @default(now())
+
+  @@index([username])
 }
 
 model VerificationToken {

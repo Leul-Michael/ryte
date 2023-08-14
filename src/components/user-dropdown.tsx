@@ -20,6 +20,7 @@ import {
 import LogoutButton from "./ui/logout-button"
 import { HeaderInnerProps } from "./header-inner"
 import AvatarIcon from "./avatar"
+import Link from "next/link"
 
 export async function UserDropdown({ user }: HeaderInnerProps) {
   return (
@@ -37,9 +38,11 @@ export async function UserDropdown({ user }: HeaderInnerProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+          <DropdownMenuItem asChild>
+            <Link href={`/profile/${user?.username}?tab=overview`}>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />

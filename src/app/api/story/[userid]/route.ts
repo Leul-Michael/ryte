@@ -1,19 +1,22 @@
 import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { userid: string } }
+) {
   const url = new URL(request.url)
-  const storySlug = url.searchParams.get("slug") ?? ""
   const cursor = url.searchParams.get("cursor") ?? ""
   const limit = url.searchParams.get("limit") ?? 10
 
   try {
-    const comments = await prisma.comment.findMany({
+    const stories = await prisma.story.findMany({
       where: {
-        storySlug,
+        userId: params.userid,
       },
       include: {
         user: true,
+        tags: true,
       },
       orderBy: {
         created_at: "desc",
@@ -23,15 +26,15 @@ export async function GET(request: Request) {
     })
 
     let nextCursor: { id: string } | undefined
-    if (comments.length > Number(limit)) {
-      const nextItem = comments.pop()
+    if (stories.length > Number(limit)) {
+      const nextItem = stories.pop()
       if (nextItem != null) {
         nextCursor = { id: nextItem.id }
       }
     }
 
     return NextResponse.json({
-      comments,
+      stories,
       nextCursor,
     })
   } catch (e) {

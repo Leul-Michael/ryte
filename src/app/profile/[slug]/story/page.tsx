@@ -7,16 +7,14 @@ import AvatarIcon from "@/components/avatar"
 import { formatNumber } from "@/lib/utils"
 import { Calendar, Mail, MapPin } from "lucide-react"
 import { format } from "date-fns"
-import UserStories from "./user-stories"
-import FollowButton from "./follow-button"
 
-async function getUser(username: string) {
+async function getMe() {
   const session = await auth()
   const userId = session?.user?.id as string
 
   const user = await prisma.user.findUnique({
     where: {
-      username,
+      id: userId,
     },
     select: {
       id: true,
@@ -25,6 +23,9 @@ async function getUser(username: string) {
       image: true,
       bio: true,
       username: true,
+      location: true,
+      socials: true,
+      status: true,
       _count: {
         select: { followers: true, stories: true, follows: true },
       },
@@ -49,10 +50,12 @@ async function getUser(username: string) {
     image: user.image,
     bio: user.bio,
     username: user.username,
+    location: user.location,
+    socials: user.socials,
+    status: user.status,
     followers: user._count.followers,
     follows: user._count.follows,
     stories: user._count.stories,
-    isAuthor: user.id === session?.user?.id,
     followedByMe: user.followers?.length > 0,
     created_at: user.created_at,
   }
@@ -60,10 +63,14 @@ async function getUser(username: string) {
 
 export default async function UserPage({
   params,
+  searchParams,
 }: {
   params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const user = await getUser(decodeURIComponent(params.slug))
+  const tab =
+    typeof searchParams.tab === "string" ? searchParams.tab : undefined
+  const user = await getMe()
 
   if (!user) {
     return (
@@ -111,21 +118,6 @@ export default async function UserPage({
               <h1 className="text-4xl md:text-5xl font-serif font-semibold leading-[1.1]">
                 {user.name}
               </h1>
-              {user.isAuthor ? (
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-full  py-2 h-auto text-xs"
-                >
-                  <Link href={`/profile/${user.username}`}>Profile</Link>
-                </Button>
-              ) : (
-                <FollowButton
-                  userId={user.id}
-                  username={user.username}
-                  followedByMe={user.followedByMe}
-                />
-              )}
             </div>
             <span className="flex items-center gap-2 text-[0.6rem] text-muted-foreground">
               <span>Followers {formatNumber(user.followers)}</span>
@@ -145,17 +137,7 @@ export default async function UserPage({
                 Addis Ababa
               </span>
             </div>
-            <div className="flex flex-col gap-1 py-4">
-              <span className="text-muted-foreground text-sm">Bio</span>
-              <p className="max-w-[600px]">{user.bio}</p>
-            </div>
           </div>
-        </div>
-        <div className="flex flex-col md:flex-row md:items-start gap-4 max-w-[900px] px-3 mx-auto w-full py-8">
-          <span className="md:w-32 w-20 text-muted-foreground md:py-6">
-            Stories
-          </span>
-          {user.id ? <UserStories userId={user.id} /> : null}
         </div>
       </div>
     </section>

@@ -6,12 +6,13 @@ import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { readingTime, slugify } from "@/lib/utils"
 import { User } from "../../types"
+import { redirect } from "next/navigation"
 
 export async function getSession(): Promise<Session> {
   const session = await auth()
 
-  if (!session) {
-    throw new Error("Unauthorized!")
+  if (!session || !session?.user) {
+    redirect("/auth/login")
   }
 
   return session
@@ -300,11 +301,16 @@ export async function isUsedUsername(name: string) {
   return usernameExists
 }
 
-export async function updateprofile(profile: Partial<User>) {
+export async function updateprofile(
+  profile: Partial<User> & {
+    location: { city: string; country: string }
+    socials: { instagram: string | null; github: string | null } | undefined
+  }
+) {
   const session = await getSession()
   const userId = session?.user?.id as string
 
-  const res = await prisma.user.update({
+  const updatedProfile = await prisma.user.update({
     where: {
       id: userId,
     },
@@ -313,5 +319,32 @@ export async function updateprofile(profile: Partial<User>) {
     },
   })
 
-  return res
+  if (updatedProfile) {
+    return {
+      success: true,
+      message: "Profile updated successfully!",
+    }
+  } else {
+    return {
+      success: false,
+      message: "Profile update failed!",
+    }
+  }
+}
+
+export async function deactivate() {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const res = await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  })
+
+  if (res) {
+    return { success: true }
+  } else {
+    return { success: false }
+  }
 }

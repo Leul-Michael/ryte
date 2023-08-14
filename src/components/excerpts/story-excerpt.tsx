@@ -7,43 +7,48 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip"
-import { format } from "date-fns"
 import Link from "next/link"
 import { Ref, forwardRef } from "react"
+import Timeago from "../timeago"
 
 interface StoryExcerptProps {
   story: Story
 }
 
 const StoryExcerpt = forwardRef(
-  (props: StoryExcerptProps, ref: Ref<HTMLAnchorElement> | null) => {
+  (props: StoryExcerptProps, ref: Ref<HTMLDivElement> | null) => {
     const { story } = props
-    const date = new Date(story.created_at)
+
     return (
-      <Link
-        ref={ref}
-        href={`/story/${story.slug}`}
-        className="flex flex-col py-6 md:pr-6 gap-3"
-      >
-        <div className="flex items-center gap-4">
+      <article ref={ref} className="flex flex-col py-6 md:pr-6 gap-3">
+        <Link
+          href={`/user/${story.user.username}`}
+          onClick={(e) => e.stopPropagation()}
+          className="group flex items-center gap-4"
+        >
           <AvatarIcon
             className="md:w-9 md:h-9 w-6 h-6"
             name={story.user.name}
             image={story.user.image}
           />
           <div className="flex gap-2 items-baseline">
-            <span className="md:text-xl font-serif">{story.user.name}</span>
+            <span className="md:text-xl font-serif group-hover:underline group-hover:underline-offset-4 decoration-1 decoration-primary/70">
+              {story.user.name}
+            </span>
             <span className="text-xs md:text-sm text-muted-foreground">
-              {format(date, "MMM dd,yyyy")}
+              <Timeago timestamp={story.created_at} noprefix />
             </span>
           </div>
-        </div>
-        <div className="flex items-start gap-4">
+        </Link>
+        <Link
+          href={`/story/${story.slug}`}
+          className="group flex items-start gap-4"
+        >
           <div className="flex flex-col items-start gap-4">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger className="text-left">
-                  <h1 className="md:text-3xl text-2xl font-serif font-semibold leading-none">
+                  <h1 className="group-hover:underline group-hover:underline-offset-4 decoration-1 decoration-primary/70 md:text-3xl text-2xl font-serif font-semibold leading-none">
                     {story.title.length > 30
                       ? story.title.slice(0, 30) + "..."
                       : story.title}
@@ -74,16 +79,16 @@ const StoryExcerpt = forwardRef(
               className="rounded-md mt-2 hidden md:block"
             />
           ) : null}
-        </div>
+        </Link>
         <div className="flex items-baseline gap-2">
           <span className="py-1 px-2 w-fit bg-muted text-xs text-muted-foreground rounded-sm">
             {story.tags[0].title + ` + ${story.tags.length - 1}`}
           </span>
-          <p className="p-1 w-fit text-xs md:text-sm text-muted-foreground rounded-sm">
+          <p className="p-1 w-fit text-xs text-muted-foreground rounded-sm">
             {story.min_read} min read
           </p>
         </div>
-      </Link>
+      </article>
     )
   }
 )

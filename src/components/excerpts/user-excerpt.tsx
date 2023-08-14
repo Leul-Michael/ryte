@@ -1,16 +1,15 @@
 "use client"
 
-import { ScrollText, UserCheck2 } from "lucide-react"
+import { ScrollText } from "lucide-react"
 import { User } from "../../../types"
 import { Button } from "../ui/button"
 import { toggleFollwoUser } from "@/app/actions"
-import clsx from "clsx"
 import {
   useTransition,
   experimental_useOptimistic as useOptimistic,
 } from "react"
 import AvatarIcon from "../avatar"
-import { formatNumber } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import Link from "next/link"
 
 interface UserExcerptProps {
@@ -19,7 +18,6 @@ interface UserExcerptProps {
     followers: number
     follows: number
     stories: number
-    loggedIn: boolean
   }
 }
 
@@ -63,8 +61,9 @@ const UserExcerpt = ({ user }: UserExcerptProps) => {
           {formatNumber(user?.stories)}
         </span>
         <Button
-          disabled={pending || !user.loggedIn}
+          disabled={pending}
           onClick={async (e) => {
+            e.preventDefault()
             e.stopPropagation()
             addFollowing(!following)
             startTransition(async () => {
@@ -72,7 +71,7 @@ const UserExcerpt = ({ user }: UserExcerptProps) => {
             })
           }}
           variant="outline"
-          className={clsx(
+          className={cn(
             following
               ? "focus:bg-transparent"
               : "bg-accent-green focus:bg-accent-green hover:bg-accent-green text-black hover:text-black",

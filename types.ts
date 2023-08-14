@@ -4,7 +4,7 @@ export interface User {
   email: string | null
   image: string | null
   username: string
-  bio?: string
+  bio: string | null
 }
 
 export interface Story {
@@ -18,8 +18,8 @@ export interface Story {
   slug: string
   userId: string
   min_read: number
-  updated_at: Date
-  created_at: Date
+  updated_at: string
+  created_at: string
 }
 
 export interface Comment {

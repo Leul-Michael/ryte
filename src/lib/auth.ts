@@ -10,6 +10,7 @@ declare module "next-auth" {
       /** The user's id. */
       id: string
       username: string
+      status: "ACTIVE" | "BLOCKED"
     } & DefaultSession["user"]
   }
 }
