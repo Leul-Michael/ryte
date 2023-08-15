@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Install NPM dependencies
         run: npm install
-      - name: Configure AWS Credentials
+      - name: Configure FTP Credentials
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ftp.etsomart.com
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
+          server_dir: /
