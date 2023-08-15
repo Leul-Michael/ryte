@@ -21,6 +21,5 @@ jobs:
           server: ftp.etsomart.com
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          server_dir: /home/etsomartcom/etsomart.com/ets/
       - name: Deploy Next.js app
         run: npx serverless
