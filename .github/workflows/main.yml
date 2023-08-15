@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          node-version: 18.x
+          node-version: "18.x"
       - name: Install NPM dependencies
         run: npm install
       - name: Configure FTP Credentials
@@ -20,4 +20,4 @@ jobs:
           server: ftp.etsomart.com
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          server_dir: /
+          server_dir: /home/etsomartcom/
