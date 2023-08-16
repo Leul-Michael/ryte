@@ -382,10 +382,12 @@ export async function isUsedUsername(name: string) {
 }
 
 export async function updateprofile(
-  profile: Partial<User> & {
-    location: { city: string; country: string }
-    socials: { instagram: string | null; github: string | null } | undefined
-  }
+  profile: Partial<
+    User & {
+      location: { city: string; country: string }
+      socials: { instagram: string | null; github: string | null } | undefined
+    }
+  >
 ) {
   const session = await getSession()
   const userId = session?.user?.id as string
