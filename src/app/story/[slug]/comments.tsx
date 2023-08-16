@@ -81,13 +81,13 @@ const Comments = ({ slug, session }: CommentsProps) => {
         <div className="flex flex-col gap-2">
           {isLoading
             ? [...Array(2).keys()].map((i) => <CommentSkeleton key={i} />)
-            : data?.map((v) => {
+            : data?.map((v, i) => {
                 return v.comments.length > 0 ? (
-                  v?.comments?.map((comment: Comment, i) => (
+                  v?.comments?.map((comment: Comment) => (
                     <CommentExcerpt key={comment.id} comment={comment} />
                   ))
                 ) : (
-                  <p className="text-xs text-muted-foreground">
+                  <p key={i} className="text-xs text-muted-foreground">
                     Be the first to comment on the story.
                   </p>
                 )

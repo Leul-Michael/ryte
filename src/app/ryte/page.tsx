@@ -1,4 +1,10 @@
+import { Metadata } from "next"
 import Form from "./form"
+
+export const metadata: Metadata = {
+  title: "Ryte story",
+  description: "Create and share your story.",
+}
 
 export default async function page() {
   return (

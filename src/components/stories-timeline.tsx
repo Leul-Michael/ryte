@@ -44,8 +44,8 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
 
   if (isLoading) {
     content = (
-      <div className="grid grid-cols-layout-300 gap-x-16 gap-y-20">
-        {[...Array(3).keys()].map((i) => (
+      <div className="grid grid-cols-layout-250 sm:grid-cols-layout-300 md:grid-cols-layout-450 gap-x-16 gap-y-20">
+        {[...Array(4).keys()].map((i) => (
           <StorySkeleton key={i} />
         ))}
       </div>
@@ -80,7 +80,7 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
     )
   } else {
     content = (
-      <div className="w-full grid grid-cols-layout-300 gap-20 h-full">
+      <div className="w-full grid grid-cols-layout-250 sm:grid-cols-layout-300 lg:grid-cols-layout-450 gap-20 h-full">
         {data.map((v) =>
           v.stories.map((story, i) => {
             return (
@@ -93,15 +93,9 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
           })
         )}
         {!isLoading && isValidating
-          ? [
-              ...Array(
-                data[0]?.stories?.length % 2 === 0
-                  ? 1
-                  : data[0]?.stories?.length % 3 === 0
-                  ? 3
-                  : 2
-              ).keys(),
-            ].map((i) => <StorySkeleton key={i} />)
+          ? [...Array(data[0]?.stories?.length % 2 === 0 ? 2 : 1).keys()].map(
+              (i) => <StorySkeleton key={i} />
+            )
           : null}
       </div>
     )

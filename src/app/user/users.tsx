@@ -1,6 +1,7 @@
 import UserExcerpt from "@/components/excerpts/user-excerpt"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
+import { Metadata } from "next"
 
 async function getUsers(name?: string) {
   const session = await auth()
@@ -54,6 +55,11 @@ async function getUsers(name?: string) {
   })
 
   return users
+}
+
+export const metadata: Metadata = {
+  title: "Find Authors adn Story Tellers",
+  description: "Find Authors and follow for latest stories.",
 }
 
 export default async function Users({ name }: { name: string }) {

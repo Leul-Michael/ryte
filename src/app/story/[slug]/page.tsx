@@ -13,6 +13,10 @@ import Link from "next/link"
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card"
 import AuthorCard from "./author-card"
 import { Metadata } from "next"
+import AuthorStories from "./author-stories"
+import StorySkeleton from "@/components/skeletons/story-skeleton"
+import Recommended from "./recommended"
+import Author from "./author"
 
 export async function getStoryBySlug(slug: string) {
   const session = await auth()
@@ -40,6 +44,7 @@ export async function getStoryBySlug(slug: string) {
       title: true,
       slug: true,
       description: true,
+      tags: true,
       thumbnail: true,
       content: true,
       min_read: true,
@@ -86,6 +91,7 @@ export async function getStoryBySlug(slug: string) {
     slug: story?.slug,
     description: story?.description,
     thumbnail: story?.thumbnail,
+    tags: story.tags,
     content: story?.content,
     min_read: story?.min_read,
     user: story?.user,
@@ -259,6 +265,44 @@ export default async function Story({ params }: { params: { slug: string } }) {
           </div>
         ) : null}
       </div>
+      <div className="flex items-center gap-4 flex-wrap">
+        {story.tags.map((t) => (
+          <p
+            className="py-1 px-3 w-fit bg-muted text-sm text-muted-foreground rounded-full"
+            key={t.id}
+          >
+            {t.title}
+          </p>
+        ))}
+      </div>
+      <Suspense
+        fallback={<Skeleton className="w-full h-full rounded-none py-8 px-2" />}
+      >
+        <StoryStats
+          slug={story.slug}
+          likedByMe={story.likedByMe}
+          savedByMe={story.savedByMe}
+          likes={story.likes}
+          comments={story.comments}
+          session={story.session}
+        />
+      </Suspense>
+      <Author
+        user={story.user}
+        session={story.session}
+        isAuthor={story.isAuthor}
+        slug={story.slug}
+      />
+      <Suspense fallback={<StorySkeleton />}>
+        <AuthorStories storyId={story.id} authorId={story.user.id} />
+      </Suspense>
+      <Suspense fallback={<StorySkeleton />}>
+        <Recommended
+          storyId={story.id}
+          authorId={story.user.id}
+          tags={story.tags.map((t) => t.id)}
+        />
+      </Suspense>
     </section>
   )
 }

@@ -1,7 +1,6 @@
 import TagSkeleton from "@/components/skeletons/tag-skeleton"
 import { Suspense } from "react"
 import Search from "./search"
-import Tags from "./tags"
 import { Metadata } from "next"
 
 export const dynamic = "force-dynamic"
@@ -22,10 +21,10 @@ export default async function Tag({
     <section className="relative flex h-full flex-col min-h-[90vh] w-full py-10">
       <div className="w-full h-full flex flex-col flex-1 py-5 gap-8">
         <h1 className="font-serif text-center md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
-          Tags
+          Authors
         </h1>
         <p className="text-center md:text-xl text-[1.1rem] max-w-[500px] mx-auto w-full text-muted-foreground">
-          Discover topics, thinking, and expertise from writers on any topic.
+          Discover authors, search by name email and tags.
         </p>
         <Search search={title} />
         <Suspense
@@ -37,7 +36,7 @@ export default async function Tag({
             </div>
           }
         >
-          <Tags title={title ?? ""} />
+          {/* <Tags title={title ?? ""} /> */}
         </Suspense>
       </div>
     </section>

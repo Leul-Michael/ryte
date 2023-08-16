@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth, { type DefaultSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@auth/prisma-adapter"
@@ -40,9 +40,9 @@ export const {
     }),
   ],
   callbacks: {
-    authorized({ auth }) {
-      return !!auth?.user // this ensures there is a logged in user for -every- request
-    },
+    // authorized({ auth }) {
+    //   return !!auth?.user // this ensures there is a logged in user for -every- request
+    // },
     signIn({ user, account, credentials, email, profile }) {
       return true
     },

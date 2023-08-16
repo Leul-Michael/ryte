@@ -44,9 +44,11 @@ export async function UserDropdown({ user }: HeaderInnerProps) {
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Dashboard</span>
+          <DropdownMenuItem asChild>
+            <Link href={`/profile/my_story`}>
+              <User className="mr-2 h-4 w-4" />
+              <span>My story</span>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard className="mr-2 h-4 w-4" />

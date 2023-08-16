@@ -59,7 +59,7 @@ export default async function Stories() {
       <p className="text-sm text-muted-foreground">
         Manage your stories by making them attractive to readers.
       </p>
-      <div className="flex flex-col gap-16 w-full">
+      <div className="grid grid-cols-layout-300 gap-16 w-full">
         {stories.map((story) => (
           <StoryExcerpt key={story.id} story={story} />
         ))}

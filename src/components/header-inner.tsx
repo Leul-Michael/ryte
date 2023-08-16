@@ -1,19 +1,20 @@
 "use client"
 
 import Link from "next/link"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Bell, PenSquare } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Session } from "next-auth"
 import { UserDropdown } from "./user-dropdown"
 import ThemeToggle from "@/components/theme/theme-toggle"
+import SearchInput from "./search"
 
 export interface HeaderInnerProps {
   user: Session["user"] | null
 }
 
 export const HeaderInner = ({ user }: HeaderInnerProps) => {
+  const router = useRouter()
   const pathname = usePathname()
   const hideLinks = pathname?.includes("/ryte")
 
@@ -28,10 +29,9 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
           </h1>
         </Link>
         {!hideLinks ? (
-          <Input
-            type="text"
-            placeholder="Search Ryte"
-            className="hidden md:block min-w-[300px]"
+          <SearchInput
+            className="hidden md:block"
+            onClick={() => router.push("/search")}
           />
         ) : null}
       </div>

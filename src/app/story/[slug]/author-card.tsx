@@ -9,7 +9,7 @@ import { cn, formatNumber } from "@/lib/utils"
 import { useTransition } from "react"
 import { toggleFollwoUser } from "@/app/actions"
 
-interface AuthorCardProps {
+export type AuthorCardProps = {
   isAuthor: boolean
   user: User & {
     followers: User[]
@@ -17,6 +17,7 @@ interface AuthorCardProps {
       followers: number
       follows: number
     }
+    created_at: Date
   }
   session: Session["user"]
   slug: string

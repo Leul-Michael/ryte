@@ -2,6 +2,8 @@ import { JSONContent } from "@tiptap/react"
 import { create } from "zustand"
 
 interface ContentStore {
+  search: string
+  setSearch: (input: string) => void
   showEditorImgModal: boolean
   setShowEditorImgModal: (input: boolean) => void
   storyThumbnail: {
@@ -19,6 +21,8 @@ interface ContentStore {
 }
 
 const useStoryStore = create<ContentStore>((set) => ({
+  search: "",
+  setSearch: (input) => set(() => ({ search: input })),
   showEditorImgModal: false,
   setShowEditorImgModal: (input) => set(() => ({ showEditorImgModal: input })),
   storyThumbnail: {
@@ -31,6 +35,8 @@ const useStoryStore = create<ContentStore>((set) => ({
   setContentJson: (input) => set(() => ({ contentJson: input })),
 }))
 
+export const useSearch = () => useStoryStore((state) => state.search)
+export const useSetSearch = () => useStoryStore((state) => state.setSearch)
 export const useShowEditorImgModal = () =>
   useStoryStore((state) => state.showEditorImgModal)
 export const useSetShowEditorImgModal = () =>
