@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { StoryDescription, StoryImage } from "../../../../../types"
 
-export async function getStoryBySlug(slug: string) {
+async function getStoryBySlug(slug: string) {
   const session = await auth()
   const userId = session?.user?.id as string
 
