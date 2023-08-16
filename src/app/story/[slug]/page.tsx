@@ -18,7 +18,7 @@ import StorySkeleton from "@/components/skeletons/story-skeleton"
 import Recommended from "./recommended"
 import Author from "./author"
 
-export async function getStoryBySlug(slug: string) {
+async function getStoryBySlug(slug: string) {
   const session = await auth()
   const userId = session?.user?.id as string
 
