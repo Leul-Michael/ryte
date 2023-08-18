@@ -1,18 +1,14 @@
 import { ImageResponse } from "next/server"
 import { NextRequest } from "next/server"
-// import { EB_Garamond } from "next/font/google"
-
-// const garamond = EB_Garamond({
-//   weight: ["700"],
-// })
 
 export const runtime = "edge"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const postTitle = searchParams.get("title")
+  const postAuthor = searchParams.get("author")
   const font = fetch(
-    new URL("../../public/fonts/kaisei-tokumin-bold.ttf", import.meta.url)
+    new URL("../../../public/fonts/kaisei-tokumin-bold.ttf", import.meta.url)
   ).then((res) => res.arrayBuffer())
   const fontData = await font
 
@@ -26,7 +22,7 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          backgroundImage: "url(https://leerob.io/og-bg.png)",
+          backgroundImage: "url(https://ryte-story.vercel.app/og-bg.jpg)",
         }}
       >
         <div
@@ -44,6 +40,28 @@ export async function GET(req: NextRequest) {
           }}
         >
           {postTitle}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            color: "white",
+            fontSize: 30,
+            fontFamily: "Kaisei Tokumin",
+            letterSpacing: "-0.05em",
+            fontStyle: "normal",
+            marginLeft: 190,
+            marginRight: 190,
+            marginTop: 190,
+          }}
+        >
+          <span
+            style={{
+              display: "inline",
+            }}
+          >
+            Ryte
+          </span>{" "}
+          by {postAuthor}
         </div>
       </div>
     ),
