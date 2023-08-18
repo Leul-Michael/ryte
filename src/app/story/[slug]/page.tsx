@@ -123,7 +123,7 @@ export async function generateMetadata({
     slug,
     user,
   } = story
-  const ogImage = thumbnail
+  const ogImage = (thumbnail as unknown as StoryImage).src
     ? (thumbnail as unknown as StoryImage).src
     : `${process.env.NEXTAUTH_URL}og?title=${title}&author=${user.name}`
 
