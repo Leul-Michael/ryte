@@ -4,10 +4,10 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Bell, PenSquare } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
-import { Session } from "next-auth"
 import { UserDropdown } from "./user-dropdown"
 import ThemeToggle from "@/components/theme/theme-toggle"
 import SearchInput from "./search"
+import { Session } from "next-auth"
 
 export interface HeaderInnerProps {
   user: Session["user"] | null

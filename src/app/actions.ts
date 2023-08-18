@@ -1,12 +1,12 @@
 "use server"
 
 import { auth } from "@/lib/auth"
-import { Session } from "next-auth/types"
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { readingTime, slugify } from "@/lib/utils"
 import { User } from "../../types"
 import { redirect } from "next/navigation"
+import { Session } from "next-auth"
 
 export async function getSession(): Promise<Session> {
   const session = await auth()
