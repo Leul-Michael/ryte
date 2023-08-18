@@ -125,7 +125,7 @@ export async function generateMetadata({
   } = story
   const ogImage = thumbnail
     ? (thumbnail as unknown as StoryImage).src
-    : `${process.env.NEXTAUTH_URL}/og?title=${title}&author=${user.name}`
+    : `${process.env.NEXTAUTH_URL}og?title=${title}&author=${user.name}`
 
   return {
     title,
@@ -136,7 +136,7 @@ export async function generateMetadata({
       type: "article",
       publishedTime: new Date(publishedTime).toISOString(),
       authors: user.name,
-      url: `${process.env.NEXTAUTH_URL}/story/${slug}`,
+      url: `${process.env.NEXTAUTH_URL}story/${slug}`,
       images: [
         {
           url: ogImage,
