@@ -56,7 +56,9 @@ export async function GET(req: NextRequest) {
         >
           <span
             style={{
-              display: "inline",
+              display: "block",
+              marginRight: 10,
+              color: "#6aed05",
             }}
           >
             Ryte
