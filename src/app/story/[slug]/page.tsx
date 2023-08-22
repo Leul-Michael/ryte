@@ -139,7 +139,7 @@ export async function generateMetadata({
       url: `${process.env.NEXTAUTH_URL}story/${slug}`,
       images: [
         {
-          url: `<div>${ogImage}</div>`,
+          url: ogImage,
         },
       ],
     },
