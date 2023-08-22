@@ -125,10 +125,10 @@ export async function generateMetadata({
   } = story
   const ogImage = (thumbnail as unknown as StoryImage).src
     ? (thumbnail as unknown as StoryImage).src
-    : `https://ryte-story.vercel.app/og?title=${title.replace(
+    : `https://ryte-story.vercel.app/og?title=${slug}&author=${user.name?.replace(
         " ",
         "_"
-      )}&author=${user.name?.replace(" ", "_")}`
+      )}`
 
   return {
     title,

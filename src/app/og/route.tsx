@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
             whiteSpace: "pre-wrap",
           }}
         >
-          {postTitle}
+          {postTitle?.replace("_", " ")}
         </div>
         <div
           style={{
