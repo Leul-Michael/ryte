@@ -123,7 +123,12 @@ export async function generateMetadata({
     slug,
     user,
   } = story
-  const ogImage = `https://ryte-story.vercel.app/og?title=${slug}&author=${user.name}`
+  const ogImage = (thumbnail as unknown as StoryImage).src
+    ? (thumbnail as unknown as StoryImage).src
+    : `https://ryte-story.vercel.app/og?title=${slug}&author=${user.name?.replace(
+        " ",
+        "_"
+      )}`
 
   return {
     title,
@@ -138,10 +143,14 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
-          width: 1200,
-          height: 600,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: (description as any).text,
+      images: [ogImage],
     },
   }
 }
