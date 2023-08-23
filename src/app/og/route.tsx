@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
             letterSpacing: "-0.05em",
             fontStyle: "normal",
             color: "white",
-            lineHeight: "120px",
+            lineHeight: "80px",
             whiteSpace: "pre-wrap",
             backgroundColor: "rgb(0,0,0,0.6)",
           }}
