@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
             paddingBottom: 190,
             width: "100%",
             display: "flex",
-            fontSize: 130,
+            fontSize: 100,
             fontFamily: "Kaisei Tokumin",
             letterSpacing: "-0.05em",
             fontStyle: "normal",
