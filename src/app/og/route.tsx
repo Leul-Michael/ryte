@@ -22,13 +22,33 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          backgroundImage: "url(https://ryte-story.vercel.app/og-bg.jpg)",
+          backgroundImage: `url(${
+            process.env.NEXTAUTH_URL as string
+          }/bg-og.jpg)`,
+          backgroundPosition: "top",
         }}
       >
         <div
           style={{
+            display: "flex",
+            color: "#6aed05",
+            fontSize: 50,
+            fontFamily: "Kaisei Tokumin",
+            letterSpacing: "-0.05em",
+            fontStyle: "normal",
             marginLeft: 190,
             marginRight: 190,
+          }}
+        >
+          Ryte
+        </div>
+        <div
+          style={{
+            marginLeft: 190,
+            marginRight: 190,
+            paddingTop: 190,
+            paddingBottom: 190,
+            width: "100%",
             display: "flex",
             fontSize: 130,
             fontFamily: "Kaisei Tokumin",
@@ -37,6 +57,7 @@ export async function GET(req: NextRequest) {
             color: "white",
             lineHeight: "120px",
             whiteSpace: "pre-wrap",
+            backgroundColor: "rgb(0,0,0,0.6)",
           }}
         >
           {postTitle}
@@ -51,18 +72,8 @@ export async function GET(req: NextRequest) {
             fontStyle: "normal",
             marginLeft: 190,
             marginRight: 190,
-            marginTop: 190,
           }}
         >
-          <span
-            style={{
-              display: "block",
-              marginRight: 10,
-              color: "#6aed05",
-            }}
-          >
-            Ryte
-          </span>{" "}
           by {postAuthor}
         </div>
       </div>
