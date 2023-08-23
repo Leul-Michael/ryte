@@ -123,12 +123,7 @@ export async function generateMetadata({
     slug,
     user,
   } = story
-  const ogImage = (thumbnail as unknown as StoryImage).src
-    ? (thumbnail as unknown as StoryImage).src
-    : `https://ryte-story.vercel.app/og?title=${slug}&author=${user.name?.replace(
-        " ",
-        "_"
-      )}`
+  const ogImage = `https://ryte-story.vercel.app/og?title=${slug}&author=${user.name}`
 
   return {
     title,
@@ -143,6 +138,8 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
+          width: 1200,
+          height: 600,
         },
       ],
     },
@@ -228,7 +225,7 @@ export default async function Story({ params }: { params: { slug: string } }) {
       {story?.thumbnail &&
       (story?.thumbnail as unknown as StoryImage)?.src &&
       !(story?.thumbnail as unknown as StoryImage)?.in_content ? (
-        <div className="relative flex max-h-[650px] min-h-[40vh] w-full overflow-hidden rounded-[4px] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[450px]">
+        <div className="relative flex max-h-[650px] h-[40vh] w-full overflow-hidden rounded-[4px] sm:h-[50vh] md:h-[60vh] lg:h-[450px]">
           <Image
             alt={(story?.thumbnail as unknown as StoryImage)?.alt}
             src={(story?.thumbnail as unknown as StoryImage)?.src}
