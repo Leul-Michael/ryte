@@ -22,9 +22,7 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          backgroundImage: `url(${
-            process.env.NEXTAUTH_URL as string
-          }/bg-og.jpg)`,
+          backgroundImage: `url(https://ryte-story.vercel.app/bg-og.jpg)`,
           backgroundPosition: "top",
         }}
       >
