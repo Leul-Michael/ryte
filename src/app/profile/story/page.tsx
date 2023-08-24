@@ -5,7 +5,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "My story",
-  description: " Manage your stories by making them attractive to readers.",
+  description: "Manage your stories by making them attractive to readers.",
 }
 
 export default async function MyStory() {

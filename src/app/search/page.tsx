@@ -2,12 +2,15 @@ import TagSkeleton from "@/components/skeletons/tag-skeleton"
 import { Suspense } from "react"
 import Search from "./search"
 import { Metadata } from "next"
+import SearchCategory from "./search-category"
+import SearchFilters from "./search-filters"
+import SearchStoryExcerpt from "@/components/skeletons/search-story-excerpt"
 
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Find Tags",
-  description: "Find tags and follow for latest stories.",
+  title: "Find Stories",
+  description: "Discover Stories, search by name, keyword and tags.",
 }
 
 export default async function Tag({
@@ -27,7 +30,20 @@ export default async function Tag({
           Discover Stories, search by name, keyword and tags.
         </p>
         <Search search={title} />
-        <Suspense
+        <div className="flex items-center gap-4 justify-center w-full">
+          <p className="text-muted-foreground">Recent:</p>
+          <div className="flex items-center gap-4 text-sm">
+            <p>Google</p>
+            <p>Lord</p>
+            <p>Kill tony</p>
+            <p>Ethiopia</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <SearchCategory />
+          <SearchFilters />
+        </div>
+        {/* <Suspense
           fallback={
             <div className="grid grid-cols-layout-250 gap-8 py-6">
               {[...Array(8).keys()].map((i) => (
@@ -36,8 +52,14 @@ export default async function Tag({
             </div>
           }
         >
-          {/* <Tags title={title ?? ""} /> */}
-        </Suspense>
+        </Suspense> */}
+        <div className="grid grid-cols-layout-250 py-12 gap-8">
+          <SearchStoryExcerpt />
+          <SearchStoryExcerpt />
+          <SearchStoryExcerpt />
+          <SearchStoryExcerpt />
+          <SearchStoryExcerpt />
+        </div>
       </div>
     </section>
   )

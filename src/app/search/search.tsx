@@ -23,7 +23,7 @@ const Search = ({ search }: { search?: string }) => {
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Search tags"
+        placeholder="Search stories"
         className="h-12 pl-12 pr-6"
       />
       <SearchIcon

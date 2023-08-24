@@ -14,7 +14,13 @@ const SearchInput = ({ className, onClick }: SearchProps) => {
   const search = useSearch()
   const setSearch = useSetSearch()
   return (
-    <div className={cn("relative w-full", className ?? "")}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        onClick()
+      }}
+      className={cn("relative w-full", className ?? "")}
+    >
       <Input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -23,12 +29,13 @@ const SearchInput = ({ className, onClick }: SearchProps) => {
         className="min-w-[300px] rounded-full w-full pr-7"
       />
       <button
+        type="submit"
         onClick={onClick}
         className="cursor-pointer absolute top-0 right-0 flex justify-center items-center w-full h-full max-w-[45px] rounded-full"
       >
         <Search size={15} className="text-muted-foreground" />
       </button>
-    </div>
+    </form>
   )
 }
 

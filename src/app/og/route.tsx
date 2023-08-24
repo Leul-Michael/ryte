@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const postTitle = searchParams.get("title")
   const postAuthor = searchParams.get("author")
+  const centerItems = searchParams.get("center")
   const font = fetch(
     new URL("../../../public/fonts/kaisei-tokumin-bold.ttf", import.meta.url)
   ).then((res) => res.arrayBuffer())
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
+          alignItems: centerItems ? "center" : "flex-start",
           justifyContent: "center",
           backgroundImage: `url(https://ryte-story.vercel.app/bg-og.jpg)`,
           backgroundPosition: "top",
@@ -48,12 +49,15 @@ export async function GET(req: NextRequest) {
             paddingBottom: 190,
             width: "100%",
             display: "flex",
+            flexDirection: "column",
+            alignItems: centerItems ? "center" : "flex-start",
+            textAlign: centerItems ? "center" : "left",
             fontSize: 100,
             fontFamily: "Kaisei Tokumin",
             letterSpacing: "-0.05em",
             fontStyle: "normal",
             color: "white",
-            lineHeight: "80px",
+            lineHeight: "90px",
             whiteSpace: "pre-wrap",
             backgroundColor: "rgb(0,0,0,0.6)",
           }}

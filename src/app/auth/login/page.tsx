@@ -2,6 +2,12 @@ import SideBar from "../side-bar"
 import AuthForm from "./form"
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Join Us",
+  description: "Create an account adn start ryting your story.",
+}
 
 export default async function Login() {
   const session = await auth()
