@@ -40,9 +40,9 @@ export const {
     }),
   ],
   callbacks: {
-    // authorized({ auth }) {
-    //   return !!auth?.user // this ensures there is a logged in user for -every- request
-    // },
+    authorized({ auth }) {
+      return !!auth?.user // this ensures there is a logged in user for -every- request
+    },
     signIn({ user, account, credentials, email, profile }) {
       return true
     },
