@@ -19,8 +19,11 @@ const SearchStoryExcerpt = () => {
   }, [])
 
   return (
-    <div className="flex flex-col border border-border rounded-lg overflow-hidden">
-      <div ref={imageRef} className="flex h-[220px] w-full">
+    <div className="flex flex-col gap-2">
+      <div
+        ref={imageRef}
+        className="flex h-[220px] w-full border border-border rounded-lg overflow-hidden"
+      >
         <Image
           src={image}
           alt="Google image"
@@ -32,6 +35,10 @@ const SearchStoryExcerpt = () => {
             objectFit: "cover",
           }}
         />
+      </div>
+      <div className="flex flex-col">
+        <h1 className="text-xl font-serif">Google is funcled up man</h1>
+        <div className="flex"></div>
       </div>
     </div>
   )

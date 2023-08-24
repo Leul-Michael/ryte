@@ -128,7 +128,7 @@ export async function generateMetadata({
     slug,
     user,
   } = story
-  const ogImage = `https://ryte-story.vercel.app/og?title=${title}&author=${user.name}`
+  const ogImage = `${process.env.NEXTAUTH_URL}/og?title=${title}&author=${user.name}`
 
   return {
     title,
