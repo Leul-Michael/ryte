@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { SelectTagsForm } from "./tags-form"
 import { cn } from "@/lib/utils"
 import { StoryDescription, StoryImage, Tag } from "../../../../../types"
+import { useShowEditorImgModal } from "@/store/zustand"
 
 type FormProps = {
   story: {
@@ -26,6 +27,7 @@ const Form = ({ story }: FormProps) => {
   const [title, setTitle] = useState(story.title ?? "")
   const [content, setContent] = useState(story.content ?? "")
   const [showTagsModal, setShowTagModals] = useState(false)
+  const showImageModal = useShowEditorImgModal()
 
   const noContent =
     content.length <= 3 ||
@@ -67,7 +69,7 @@ const Form = ({ story }: FormProps) => {
       <form onSubmit={continueToAddTags} className="flex flex-col pb-10">
         <Button
           type="submit"
-          disabled={!title || noContent}
+          disabled={!title || noContent || showImageModal}
           className={cn(
             "self-end px-8 relative bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black",
             showTagsModal ? "opacity-0" : "opacity-100"

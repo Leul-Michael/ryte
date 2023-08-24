@@ -26,11 +26,11 @@ const StoryExcerpt = forwardRef(
 
     return (
       <article ref={ref} className={cn("flex flex-col gap-2", className ?? "")}>
-        <Link
-          href={`/user/${story.user.username}`}
-          className="group flex items-center justify-between flex-wrap gap-4"
-        >
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            href={`/user/${story.user.username}`}
+            className="group w-full flex items-center gap-4"
+          >
             <AvatarIcon
               className="w-6 h-6"
               name={story.user.name}
@@ -46,7 +46,7 @@ const StoryExcerpt = forwardRef(
                 </span>
               ) : null}
             </div>
-          </div>
+          </Link>
           {story?.isAuthor ? (
             <div className="flex gap-4 items-center">
               <Button
@@ -58,7 +58,7 @@ const StoryExcerpt = forwardRef(
               </Button>
             </div>
           ) : null}
-        </Link>
+        </div>
         <Link
           href={`/story/${story.slug}`}
           className="group  flex gap-4 items-start"
@@ -87,7 +87,8 @@ const StoryExcerpt = forwardRef(
             </div>
             <div className="flex items-baseline gap-2">
               <span className="py-1 px-3 w-fit bg-muted text-[0.65rem] text-muted-foreground rounded-full">
-                {story.tags[0].title + ` + ${story.tags.length - 1}`}
+                {story.tags[Math.floor(Math.random() * story.tags.length) ?? 0]
+                  .title + ` + ${story.tags.length - 1}`}
               </span>
               <p className="p-1 w-fit text-xs text-muted-foreground rounded-sm">
                 {story.min_read} min read
@@ -95,7 +96,7 @@ const StoryExcerpt = forwardRef(
             </div>
           </div>
           {story?.thumbnail?.src ? (
-            <div className="relative grid w-full max-w-[150px] h-full">
+            <div className="relative hidden md:grid w-full max-w-[150px] h-full">
               <Image
                 alt={story?.thumbnail?.alt}
                 src={story?.thumbnail?.src}
@@ -106,7 +107,7 @@ const StoryExcerpt = forwardRef(
                   maxWidth: "100%",
                   maxHeight: "100%",
                 }}
-                className="rounded-sm object-cover hidden md:block mt-2 w-full"
+                className="rounded-sm object-cover mt-2 w-full"
               />
             </div>
           ) : null}

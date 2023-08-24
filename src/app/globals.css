@@ -7,21 +7,21 @@
     @apply md:text-5xl text-4xl;
     @apply font-medium;
     @apply font-serif;
-    @apply md:leading-snug leading-[1.1];
+    @apply md:leading-normal leading-snug;
   }
 
   .tiptap h2 {
     @apply md:text-4xl text-[2rem];
     @apply font-medium;
     @apply font-serif;
-    @apply md:leading-snug leading-[1.1];
+     @apply md:leading-normal leading-snug;
   }
 
   .tiptap h3 {
     @apply text-3xl;
     @apply font-medium;
     @apply font-serif;
-    @apply md:leading-snug leading-[1.1];
+     @apply md:leading-normal leading-snug;
   }
   
   .tiptap p {

@@ -8,11 +8,7 @@ export const metadata: Metadata = {
   description: " Manage your stories by making them attractive to readers.",
 }
 
-export default async function MyStory({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function MyStory() {
   return (
     <section className="relative flex h-full flex-col min-h-[90vh] w-full pb-10">
       <div className="w-full h-full flex flex-col flex-1 gap-8 py-8 max-w-[900px] mx-auto">

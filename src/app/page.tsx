@@ -69,7 +69,7 @@ async function Authed({ tag }: { tag: string | undefined }) {
 function UnAuthed() {
   return (
     <>
-      <div className="flex flex-col w-full gap-8">
+      <div className="flex flex-col w-full gap-8 min-h-screen h-full py-20 justify-center">
         <h1 className="font-serif md:text-6xl text-5xl font-semibold leading-[1.1] capitalize text-accent-foreground">
           <span className="uppercase">Ryte</span> your <i>thoughts!</i>
         </h1>
@@ -86,7 +86,12 @@ function UnAuthed() {
           </Link>
         </Button>
       </div>
-      <div className="flex flex-col w-full"></div>
+      <div className="flex flex-col gap-8 w-full pb-20">
+        <h2 className="md:text-4xl text-[2rem] max-w-[500px] font-serif">
+          Stories
+        </h2>
+        <StoriesTimeline tag={""} />
+      </div>
     </>
   )
 }

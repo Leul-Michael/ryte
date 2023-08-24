@@ -15,10 +15,11 @@ import { saveComment } from "@/app/actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import CommentSkeleton from "@/components/skeletons/comment-skeleton"
 import { Session } from "next-auth/types"
+import Link from "next/link"
 
 interface CommentsProps {
   slug: string
-  session: Session["user"]
+  session: Pick<Session["user"], "id" | "name"> | null
 }
 
 const Comments = ({ slug, session }: CommentsProps) => {
@@ -40,42 +41,61 @@ const Comments = ({ slug, session }: CommentsProps) => {
     <SheetContent className="h-screen flex flex-col">
       <SheetHeader className="pb-2">
         <SheetTitle>Comments</SheetTitle>
-        <SheetDescription>What do you think about the story?</SheetDescription>
-        <form
-          style={{ opacity: !pending || session ? 1 : 0.7 }}
-          action={() => {
-            if (comment.length < 2 || !slug || !session) return
-            startTransition(async () => {
-              await saveComment(comment, slug)
-              mutate()
-            })
-            setComment("")
-            commentsRef.current?.scrollIntoView({
-              block: "end",
-              behavior: "smooth",
-            })
-          }}
-          className="flex flex-col gap-4"
-        >
-          <textarea
-            disabled={pending}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="resize-y w-full h-[100px] outline-none text-sm py-2 focus:border-border bg-transparent border-b border-border/60"
-            placeholder="comment"
-            maxLength={200}
-          ></textarea>
-
+        {!session ? (
+          <SheetDescription>Sign in to commment to the story</SheetDescription>
+        ) : (
+          <SheetDescription>
+            What do you think about the story?
+          </SheetDescription>
+        )}
+        {!session ? (
           <Button
             type="submit"
             variant="outline"
-            disabled={comment.length < 2 || pending || !session}
             className="self-start px-8 rounded-full"
+            asChild
           >
-            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Add Comment
+            <Link href="/auth/login">Sing In</Link>
           </Button>
-        </form>
+        ) : (
+          <form
+            style={{ opacity: !pending || session ? 1 : 0.7 }}
+            action={() => {
+              if (comment.length < 2 || !slug || !session) return
+              startTransition(async () => {
+                await saveComment(comment, slug)
+                mutate()
+              })
+              setComment("")
+              commentsRef.current?.scrollIntoView({
+                block: "end",
+                behavior: "smooth",
+              })
+            }}
+            className="flex flex-col gap-4"
+          >
+            <textarea
+              disabled={pending}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="resize-y w-full h-[100px] outline-none text-sm py-2 focus:border-border bg-transparent border-b border-border/60"
+              placeholder="comment"
+              maxLength={200}
+            ></textarea>
+
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={comment.length < 2 || pending || !session}
+              className="self-start px-8 rounded-full"
+            >
+              {pending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Add Comment
+            </Button>
+          </form>
+        )}
       </SheetHeader>
       <ScrollArea ref={commentsRef} className="h-full">
         <div className="flex flex-col gap-2">

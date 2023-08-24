@@ -23,7 +23,7 @@ interface StoryStatsProps {
   comments: number
   likedByMe: boolean
   savedByMe: boolean
-  session: Session["user"]
+  session: Pick<Session["user"], "id" | "name"> | null
 }
 
 const StoryStats = ({
@@ -74,7 +74,8 @@ const StoryStats = ({
               "flex items-center gap-1 text-xs text-muted-foreground",
               pending
                 ? "opacity-60 cursor-default"
-                : "opacity-100 cursor-pointer"
+                : "opacity-100 cursor-pointer",
+              !session ? "cursor-default" : "cursor-pointer"
             )}
           >
             <TooltipWrapper title="fist bumps">
@@ -111,7 +112,7 @@ const StoryStats = ({
           </span>
         </div>
         <span className="flex items-center text-xs text-muted-foreground">
-          <ShareDropdown />
+          <ShareDropdown slug={slug} />
         </span>
       </div>
     </div>

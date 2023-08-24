@@ -2,7 +2,14 @@ import { SearchIcon, X } from "lucide-react"
 import Image from "next/image"
 import { Input } from "./ui/input"
 import Wrapper from "./ui/wrapper"
-import { MouseEventHandler, useState } from "react"
+import {
+  FormEvent,
+  FormEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from "react"
 import { Button } from "./ui/button"
 
 interface UnsplashImage {
@@ -33,26 +40,45 @@ const TiptapImageModal = ({
 }) => {
   const [images, setImages] = useState<UnsplashImage[] | null>(null)
   const [title, setTitle] = useState("")
+  const [refetch, setRefetch] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(0)
+
+  const getImges = useCallback(async () => {
+    const res = await fetch(
+      `https://api.unsplash.com/search/photos?page=${page}&query=${title}&per_page=20`,
+      {
+        headers: {
+          Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
+        },
+      }
+    )
+    const data = await res.json()
+    setImages(data?.results ?? [])
+    setTotalPage(Number(data?.total_pages))
+    setRefetch(false)
+  }, [page, title])
+
+  useEffect(() => {
+    const search = async () => {
+      await getImges()
+    }
+    if (refetch) {
+      search()
+    }
+  }, [refetch, getImges])
 
   const onSearch: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.stopPropagation()
     e.preventDefault()
 
     if (!title.length) return
 
     try {
       setIsLoading(true)
-      const res = await fetch(
-        `https://api.unsplash.com/search/photos?page=1&query=${title}&=per_page=20`,
-        {
-          headers: {
-            Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
-          },
-        }
-      )
-      const data = await res.json()
-      setImages(data?.results ?? [])
+      await getImges()
     } catch {
       setIsError(true)
     } finally {
@@ -67,7 +93,7 @@ const TiptapImageModal = ({
       pending={false}
       className={className}
     >
-      <div className="w-full max-w-screen-xl mx-auto h-full min-h-screen pt-20 flex flex-col gap-4">
+      <div className="w-full h-screen overflow-y-auto pt-20 flex flex-col gap-4 px-5 md:px-10">
         <div className="w-full flex max-w-[600px] mx-auto">
           <div className="relative w-full flex max-w-[600px] mx-auto">
             <SearchIcon
@@ -97,18 +123,20 @@ const TiptapImageModal = ({
           </Button>
         </div>
         {images != null && images?.length > 0 ? (
-          <div className="grid grid-cols-layout-300 pt-12 py-20 gap-4">
+          <div className="grid grid-cols-layout-300 py-12 gap-4">
             {images?.map((i: UnsplashImage) => (
               <Image
                 key={i.id}
                 alt={i.alt_description}
                 src={i.urls.small}
                 width={300}
+                // width={window.innerWidth >= 768 ? 300 : window.innerWidth}
                 height={200}
                 style={{
                   maxHeight: "200px",
                   height: "auto",
                   objectFit: "cover",
+                  marginInline: "auto",
                 }}
                 className="rounded-[3px] bg-border/20"
                 onClick={() => {
@@ -127,6 +155,32 @@ const TiptapImageModal = ({
               : "0 results."}{" "}
           </p>
         ) : null}
+        <div className="flex items-center gap-4 justify-center flex-wrap pb-12">
+          <Button
+            disabled={page <= 1 || title.length <= 0}
+            onClick={(e) => {
+              e.preventDefault()
+              setPage((prev) => prev - 1)
+              setRefetch(true)
+            }}
+            variant="outline"
+            size="sm"
+          >
+            Prev
+          </Button>
+          <Button
+            disabled={page >= totalPage || title.length <= 0}
+            onClick={(e) => {
+              e.preventDefault()
+              setPage((prev) => prev + 1)
+              setRefetch(true)
+            }}
+            variant="outline"
+            size="sm"
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </Wrapper>
   )

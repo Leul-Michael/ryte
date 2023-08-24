@@ -19,7 +19,7 @@ export type AuthorCardProps = {
     }
     created_at: Date
   }
-  session: Session["user"]
+  session: Pick<Session["user"], "id" | "name"> | null
   slug: string
 }
 

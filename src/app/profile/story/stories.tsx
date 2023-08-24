@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import Link from "next/link"
-import { Tag } from "../../../../types"
 
 async function getMyStories() {
   const session = await auth()
@@ -59,7 +58,7 @@ export default async function Stories() {
       <p className="text-sm text-muted-foreground">
         Manage your stories by making them attractive to readers.
       </p>
-      <div className="grid grid-cols-layout-300 gap-16 w-full">
+      <div className="grid grid-cols-1 gap-20 w-full">
         {stories.map((story) => (
           <StoryExcerpt key={story.id} story={story} />
         ))}
@@ -76,7 +75,7 @@ export default async function Stories() {
         variant="outline"
         className="self-start px-8 rounded-full"
       >
-        <Link href="/ryte">Create new</Link>
+        <Link href="/ryte">Ryte</Link>
       </Button>
     </div>
   )

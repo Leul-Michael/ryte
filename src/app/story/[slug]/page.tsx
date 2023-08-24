@@ -85,7 +85,12 @@ async function getStoryBySlug(slug: string) {
   if (!story) return null
 
   return {
-    session: session?.user,
+    session: session?.user
+      ? {
+          id: session.user.id,
+          name: session.user.name,
+        }
+      : null,
     id: story?.id,
     title: story?.title,
     slug: story?.slug,

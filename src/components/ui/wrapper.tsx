@@ -61,7 +61,7 @@ const Wrapper = ({
       ref={containerRef}
       data-state={show ? "open" : "closed"}
       className={cn(
-        "data-[state=open]:animate-in px-5 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-full overflow-auto min-h-screen bg-background",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed z-[51] flex flex-col justify-center items-center top-0 left-0 w-full h-full min-h-screen bg-background",
         className ?? ""
       )}
     >
@@ -71,7 +71,7 @@ const Wrapper = ({
         disabled={pending}
         variant="outline"
         size="icon"
-        className="cursor-pointer self-end sticky w-[40px] min-w-[40px] h-[40px] min-h-[40px] right-0 md:right-12 top-3 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+        className="cursor-pointer self-end sticky w-[40px] min-w-[40px] h-[40px] min-h-[40px] md:mx-10 mx-5 right-0 md:right-12 top-3 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
       >
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
