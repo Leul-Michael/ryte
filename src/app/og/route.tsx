@@ -43,8 +43,8 @@ export async function GET(req: NextRequest) {
         </div>
         <div
           style={{
-            marginLeft: 190,
-            marginRight: 190,
+            marginLeft: centerItems ? 300 : 190,
+            marginRight: centerItems ? 300 : 190,
             paddingTop: 190,
             paddingBottom: 190,
             width: "100%",
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
             flexDirection: "column",
             alignItems: centerItems ? "center" : "flex-start",
             textAlign: centerItems ? "center" : "left",
-            fontSize: 100,
+            fontSize: centerItems ? 50 : 100,
             fontFamily: "Kaisei Tokumin",
             letterSpacing: "-0.05em",
             fontStyle: "normal",

@@ -1,18 +1,22 @@
 import prisma from "@/lib/prisma"
+import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 
-export async function GET(
-  request: Request,
-  { params }: { params: { userid: string } }
-) {
+export async function GET(request: Request) {
+  const session = await auth()
+  const userId = session?.user?.id as string
+
   const url = new URL(request.url)
-  const cursor = url.searchParams.get("cursor") ?? ""
+  const title = url.searchParams.get("title") ?? ""
   const limit = url.searchParams.get("limit") ?? 10
+  const cursor = url.searchParams.get("cursor") ?? ""
+
+  let stories = []
 
   try {
-    const stories = await prisma.story.findMany({
+    stories = await prisma.story.findMany({
       where: {
-        userId: params.userid,
+        title: { contains: title, mode: "insensitive" },
       },
       include: {
         user: {

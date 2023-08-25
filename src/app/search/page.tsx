@@ -1,10 +1,8 @@
-import TagSkeleton from "@/components/skeletons/tag-skeleton"
-import { Suspense } from "react"
 import Search from "./search"
 import { Metadata } from "next"
 import SearchCategory from "./search-category"
 import SearchFilters from "./search-filters"
-import SearchStoryExcerpt from "@/components/excerpts/search-story-excerpt"
+import SearchTimeline from "@/components/search-timeline"
 
 export const dynamic = "force-dynamic"
 
@@ -43,23 +41,7 @@ export default async function Tag({
           <SearchCategory />
           <SearchFilters />
         </div>
-        {/* <Suspense
-          fallback={
-            <div className="grid grid-cols-layout-250 gap-8 py-6">
-              {[...Array(8).keys()].map((i) => (
-                <TagSkeleton key={i} />
-              ))}
-            </div>
-          }
-        >
-        </Suspense> */}
-        <div className="grid grid-cols-layout-250 py-12 gap-8">
-          <SearchStoryExcerpt />
-          <SearchStoryExcerpt />
-          <SearchStoryExcerpt />
-          <SearchStoryExcerpt />
-          <SearchStoryExcerpt />
-        </div>
+        <SearchTimeline title={title ?? ""} />
       </div>
     </section>
   )
