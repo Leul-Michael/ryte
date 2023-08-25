@@ -4,7 +4,7 @@ import Search from "./search"
 import { Metadata } from "next"
 import SearchCategory from "./search-category"
 import SearchFilters from "./search-filters"
-import SearchStoryExcerpt from "@/components/skeletons/search-story-excerpt"
+import SearchStoryExcerpt from "@/components/excerpts/search-story-excerpt"
 
 export const dynamic = "force-dynamic"
 

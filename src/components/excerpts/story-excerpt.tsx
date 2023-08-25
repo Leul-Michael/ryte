@@ -32,7 +32,7 @@ const StoryExcerpt = forwardRef(
             className="group w-full flex items-center gap-4"
           >
             <AvatarIcon
-              className="w-6 h-6"
+              className="w-6 h-6 text-xs"
               name={story.user.name}
               image={story.user.image}
             />

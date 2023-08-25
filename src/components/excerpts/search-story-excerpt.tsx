@@ -2,6 +2,9 @@
 
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
+import AvatarIcon from "../avatar"
+import { FistIcon } from "../buttons"
+import { formatNumber } from "@/lib/utils"
 
 const url = process.env.NEXT_PUBLIC_BASEURL
 
@@ -36,9 +39,24 @@ const SearchStoryExcerpt = () => {
           }}
         />
       </div>
-      <div className="flex flex-col">
-        <h1 className="text-xl font-serif">Google is funcled up man</h1>
-        <div className="flex"></div>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <AvatarIcon
+              className="w-6 h-6 text-xs"
+              name="Leul Michael"
+              image={null}
+            />
+            <h6 className="text-sm font-serif">Leul Michael</h6>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1 text-xs">
+              <FistIcon fisted={false} />
+              {formatNumber(12500)}
+            </span>
+          </div>
+        </div>
+        <h1 className="text-sm font-serif">Google is funcled up man</h1>
       </div>
     </div>
   )

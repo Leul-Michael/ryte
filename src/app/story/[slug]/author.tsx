@@ -28,8 +28,8 @@ const Author = ({ user, isAuthor, session, slug }: AuthorCardProps) => {
         <div className="flex items-center gap-4">
           <AvatarIcon
             className="md:h-[2.85rem] md:w-[2.85rem] h-10 w-10"
-            name={user.name ?? null}
-            image={user.image ?? null}
+            name={user.name}
+            image={user.image}
           />
           <div className="flex flex-col">
             <span className="md:text-xl font-serif">{user.name}</span>
