@@ -16,7 +16,16 @@ export async function GET(request: Request) {
   try {
     data = await prisma.story.findMany({
       where: {
-        title: { contains: title, mode: "insensitive" },
+        OR: [
+          { title: { contains: title, mode: "insensitive" } },
+          {
+            tags: {
+              some: {
+                title: { contains: title, mode: "insensitive" },
+              },
+            },
+          },
+        ],
       },
       select: {
         id: true,
@@ -45,7 +54,7 @@ export async function GET(request: Request) {
         created_at: true,
       },
       orderBy: {
-        created_at: "desc",
+        title: "desc",
       },
       take: Number(limit) + 1,
       cursor: cursor ? { id: cursor } : undefined,

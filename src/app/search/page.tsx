@@ -2,7 +2,7 @@ import Search from "./search"
 import { Metadata } from "next"
 import SearchCategory from "./search-category"
 import SearchFilters from "./search-filters"
-import SearchTimeline from "@/components/search-timeline"
+import SearchTimeline from "./search-timeline"
 
 export const dynamic = "force-dynamic"
 
@@ -16,7 +16,7 @@ export default async function Tag({
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const title = typeof searchParams.q === "string" ? searchParams.q : undefined
+  const title = typeof searchParams.q === "string" ? searchParams.q : ""
 
   return (
     <section className="relative flex h-full flex-col min-h-[90vh] w-full py-10">

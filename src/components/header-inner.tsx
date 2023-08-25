@@ -17,6 +17,7 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
   const router = useRouter()
   const pathname = usePathname()
   const hideLinks = pathname?.includes("/ryte")
+  const hideSearchBar = pathname?.includes("/search") || hideLinks
 
   if (pathname?.includes("/auth/")) return null
 
@@ -28,7 +29,7 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
             Ryte
           </h1>
         </Link>
-        {!hideLinks ? (
+        {!hideSearchBar ? (
           <SearchInput
             className="hidden md:block"
             onClick={() => router.push("/search")}

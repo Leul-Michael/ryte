@@ -24,7 +24,7 @@ const SearchStoryExcerpt = forwardRef(
 
     const image = (story.thumbnail as StoryImage).src
       ? (story.thumbnail as StoryImage).src
-      : `https://ryte-story.vercel.app/og?title=${story.title}&author=${story.user.name}&center=true`
+      : `${url}/og?title=${story.title}&author=${story.user.name}&center=true`
 
     const imageRef = useRef<HTMLDivElement | null>(null)
     const [width, setWidth] = useState(300)
@@ -65,7 +65,7 @@ const SearchStoryExcerpt = forwardRef(
             </div>
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1 text-xs">
-                <FistIcon fisted={story.likedByMe} />
+                <FistIcon fisted={story.likedByMe} width="15px" />
                 {formatNumber(story.likes)}
               </span>
             </div>

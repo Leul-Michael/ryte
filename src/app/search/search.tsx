@@ -4,22 +4,34 @@ import { Input } from "@/components/ui/input"
 import { useSearch, useSetSearch } from "@/store/zustand"
 import { SearchIcon, X } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useDebounce } from "use-debounce"
+import { FormEventHandler, useEffect } from "react"
 
 const Search = ({ search }: { search?: string }) => {
   const router = useRouter()
   const title = useSearch()
   const setTitle = useSetSearch()
-  const [debounce] = useDebounce(title, 300)
 
-  //   useEffect(() => {
-  //     if (!debounce) return router.push("/tag")
-  //     router.push(`tag?q=${debounce}`)
-  //   }, [debounce, router])
+  useEffect(() => {
+    if (search) {
+      setTitle(search)
+    }
+  }, [search, setTitle])
+
+  const onSearch: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+    router.push(`search?q=${title}`)
+  }
+
+  const onClear = () => {
+    setTitle("")
+    router.push("/search")
+  }
 
   return (
-    <div className="relative w-full flex max-w-[500px] mx-auto flex-col">
+    <form
+      onSubmit={onSearch}
+      className="relative w-full flex max-w-[500px] mx-auto flex-col"
+    >
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -32,12 +44,12 @@ const Search = ({ search }: { search?: string }) => {
       />
       {title.length > 0 ? (
         <X
-          onClick={() => setTitle("")}
+          onClick={onClear}
           size={15}
           className="absolute top-[50%] cursor-pointer -translate-y-[50%] right-2 text-muted-foreground"
         />
       ) : null}
-    </div>
+    </form>
   )
 }
 

@@ -4,9 +4,9 @@ import useLastPostRef from "@/hooks/useLastpostRef"
 import { fetcher } from "@/lib/utils"
 import { useMemo } from "react"
 import useSWRInfinite from "swr/infinite"
-import SearchStoryExcerpt from "./excerpts/search-story-excerpt"
-import { Story } from "../../types"
-import SearchStorySkeleton from "./skeletons/search-story-skeleton"
+import SearchStoryExcerpt from "../../components/excerpts/search-story-excerpt"
+import { Story } from "../../../types"
+import SearchStorySkeleton from "../../components/skeletons/search-story-skeleton"
 
 type SearchTimelineProps = {
   title: string
@@ -62,24 +62,26 @@ const SearchTimeline = ({ title }: SearchTimelineProps) => {
     )
   } else {
     content = (
-      <div className="w-full grid grid-cols-layout-250 gap-8 h-full">
-        {data.map((v) =>
-          v.stories.map((story, i) => {
-            return (
-              <SearchStoryExcerpt
-                ref={i === v.stories.length - 1 ? lastPostRef : null}
-                key={story.id}
-                story={story}
-              />
-            )
-          })
-        )}
-        {!isLoading && isValidating
-          ? [...Array(data[0]?.stories?.length % 2 === 0 ? 2 : 1).keys()].map(
-              (i) => <SearchStorySkeleton key={i} />
-            )
-          : null}
-      </div>
+      <>
+        <div className="w-full grid grid-cols-layout-250 gap-8 h-full">
+          {data.map((v) =>
+            v.stories.map((story, i) => {
+              return (
+                <SearchStoryExcerpt
+                  ref={i === v.stories.length - 1 ? lastPostRef : null}
+                  key={story.id}
+                  story={story}
+                />
+              )
+            })
+          )}
+        </div>
+        <div className="w-full grid grid-cols-layout-250 gap-8 h-full">
+          {!isLoading && isValidating
+            ? [...Array(4).keys()].map((i) => <SearchStorySkeleton key={i} />)
+            : null}
+        </div>
+      </>
     )
   }
 

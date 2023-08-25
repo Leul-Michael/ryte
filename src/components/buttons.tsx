@@ -1,10 +1,16 @@
 import { cn } from "@/lib/utils"
 
-export function FistIcon({ fisted }: { fisted: boolean }) {
+export function FistIcon({
+  fisted,
+  width = "20px",
+}: {
+  fisted: boolean
+  width?: string
+}) {
   return (
     <svg
-      width="20px"
-      height="20px"
+      width={width}
+      height={width}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
       role="img"

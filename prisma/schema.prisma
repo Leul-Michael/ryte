@@ -53,13 +53,14 @@ model User {
   role          Role          @default(BASIC)
   status        ACCOUNTSTATUS @default(ACTIVE)
 
-  stories   Story[]
+  stories   Story[]   @relation(name: "Author")
   likes     Like[]
   saved     String[]
   followers User[]    @relation(name: "Followers")
   follows   User[]    @relation(name: "Followers")
   comments  Comment[]
   tags      Tag[]
+  seen      Story[]   @relation(name: "Seen")
 
   created_at DateTime @default(now())
 
@@ -84,10 +85,11 @@ model Story {
   slug        String @unique
 
   userId   String
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(name: "Author", fields: [userId], references: [id], onDelete: Cascade)
   tags     Tag[]
   likes    Like[]
   comments Comment[]
+  seen     User[]    @relation(name: "Seen")
 
   min_read Int
 
