@@ -56,7 +56,7 @@ const SearchStoryExcerpt = () => {
             </span>
           </div>
         </div>
-        <h1 className="text-sm font-serif">Google is funcled up man</h1>
+        <h1 className="text-base font-serif">Google is funcled up man</h1>
       </div>
     </div>
   )
