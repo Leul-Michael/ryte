@@ -7,7 +7,7 @@ import { useSearch, useSetSearch } from "@/store/zustand"
 
 type SearchProps = {
   className?: string
-  onClick: () => void
+  onClick: (url: string) => void
 }
 
 const SearchInput = ({ className, onClick }: SearchProps) => {
@@ -17,7 +17,7 @@ const SearchInput = ({ className, onClick }: SearchProps) => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        onClick()
+        onClick(`/search?q=${search}`)
       }}
       className={cn("relative w-full", className ?? "")}
     >
@@ -30,7 +30,7 @@ const SearchInput = ({ className, onClick }: SearchProps) => {
       />
       <button
         type="submit"
-        onClick={onClick}
+        onClick={() => onClick(`/search?q=${search}`)}
         className="cursor-pointer absolute top-0 right-0 flex justify-center items-center w-full h-full max-w-[45px] rounded-full"
       >
         <Search size={15} className="text-muted-foreground" />

@@ -32,7 +32,7 @@ export const HeaderInner = ({ user }: HeaderInnerProps) => {
         {!hideSearchBar ? (
           <SearchInput
             className="hidden md:block"
-            onClick={() => router.push("/search")}
+            onClick={(url) => router.push(url)}
           />
         ) : null}
       </div>
