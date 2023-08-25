@@ -43,16 +43,16 @@ export async function GET(req: NextRequest) {
         </div>
         <div
           style={{
-            marginLeft: centerItems ? 300 : 190,
-            marginRight: centerItems ? 300 : 190,
+            marginLeft: 190,
+            marginRight: 190,
             paddingTop: 190,
             paddingBottom: 190,
-            width: "100%",
+            width: centerItems ? "70%" : "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: centerItems ? "center" : "flex-start",
             textAlign: centerItems ? "center" : "left",
-            fontSize: centerItems ? 50 : 100,
+            fontSize: centerItems ? 70 : 100,
             fontFamily: "Kaisei Tokumin",
             letterSpacing: "-0.05em",
             fontStyle: "normal",
