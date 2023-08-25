@@ -5,12 +5,17 @@ import { Ref, forwardRef, useEffect, useRef, useState } from "react"
 import AvatarIcon from "../avatar"
 import { FistIcon } from "../buttons"
 import { formatNumber } from "@/lib/utils"
-import { Story, StoryImage } from "../../../types"
+import { Story, StoryImage, User } from "../../../types"
+import Link from "next/link"
 
 const url = process.env.NEXT_PUBLIC_BASEURL
 
 type StoryExcerptProps = {
-  story: Story
+  story: Story & {
+    likes: number
+    likedByMe: boolean
+    created_at: Date
+  }
 }
 
 const SearchStoryExcerpt = forwardRef(
@@ -31,7 +36,7 @@ const SearchStoryExcerpt = forwardRef(
     }, [])
 
     return (
-      <div className="flex flex-col gap-2">
+      <Link href={`/story/${story.slug}`} className="flex flex-col gap-2">
         <div
           ref={imageRef}
           className="flex h-[220px] w-full border border-border rounded-lg overflow-hidden"
@@ -60,18 +65,18 @@ const SearchStoryExcerpt = forwardRef(
             </div>
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1 text-xs">
-                <FistIcon fisted={false} />
-                {formatNumber(12500)}
+                <FistIcon fisted={story.likedByMe} />
+                {formatNumber(story.likes)}
               </span>
             </div>
           </div>
-          <h1 className="text-base font-serif">
+          <h1 className="text-base font-serif font-semibold">
             {story.title.length > 200
               ? story.title.slice(0, 200) + " ..."
               : story.title}
           </h1>
         </div>
-      </div>
+      </Link>
     )
   }
 )

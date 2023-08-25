@@ -11,14 +11,18 @@ export async function GET(request: Request) {
   const limit = url.searchParams.get("limit") ?? 10
   const cursor = url.searchParams.get("cursor") ?? ""
 
-  let stories = []
+  let data = []
 
   try {
-    stories = await prisma.story.findMany({
+    data = await prisma.story.findMany({
       where: {
         title: { contains: title, mode: "insensitive" },
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        thumbnail: true,
         user: {
           select: {
             id: true,
@@ -27,6 +31,18 @@ export async function GET(request: Request) {
           },
         },
         tags: true,
+        _count: {
+          select: { likes: true, comments: true },
+        },
+        likes:
+          userId == null
+            ? false
+            : {
+                where: {
+                  userId,
+                },
+              },
+        created_at: true,
       },
       orderBy: {
         created_at: "desc",
@@ -36,12 +52,25 @@ export async function GET(request: Request) {
     })
 
     let nextCursor: { id: string } | undefined
-    if (stories.length > Number(limit)) {
-      const nextItem = stories.pop()
+    if (data.length > Number(limit)) {
+      const nextItem = data.pop()
       if (nextItem != null) {
         nextCursor = { id: nextItem.id }
       }
     }
+
+    const stories = data.map((story) => {
+      return {
+        id: story.id,
+        title: story.title,
+        slug: story.slug,
+        thumbnail: story.thumbnail,
+        tage: story.tags,
+        user: story.user,
+        likes: story._count.likes,
+        likedByMe: story.likes?.length > 0,
+      }
+    })
 
     return NextResponse.json({
       stories,

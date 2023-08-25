@@ -15,7 +15,11 @@ type SearchTimelineProps = {
 const SearchTimeline = ({ title }: SearchTimelineProps) => {
   const { data, isLoading, mutate, size, setSize, isValidating } =
     useSWRInfinite<{
-      stories: Story[]
+      stories: (Story & {
+        likes: number
+        likedByMe: boolean
+        created_at: Date
+      })[]
       nextCursor: { id: String } | undefined
     }>((pageIndex, previousPageData) => {
       if (previousPageData && !previousPageData?.stories?.length) return null // reached the end

@@ -11,7 +11,7 @@ import { toggleFollwoUser } from "@/app/actions"
 
 export type AuthorCardProps = {
   isAuthor: boolean
-  user: User & {
+  user: Pick<User, "id" | "name" | "image" | "bio"> & {
     followers: User[]
     _count: {
       followers: number

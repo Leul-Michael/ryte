@@ -49,7 +49,11 @@ async function getStoryBySlug(slug: string) {
       content: true,
       min_read: true,
       user: {
-        include: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          bio: true,
           _count: {
             select: {
               followers: true,
@@ -64,6 +68,7 @@ async function getStoryBySlug(slug: string) {
                     id: userId,
                   },
                 },
+          created_at: true,
         },
       },
       created_at: true,
