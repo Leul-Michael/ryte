@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import SearchCategory from "./search-category"
 import SearchFilters from "./search-filters"
 import SearchTimeline from "./search-timeline"
+import { auth } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -17,6 +18,9 @@ export default async function Tag({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const title = typeof searchParams.q === "string" ? searchParams.q : ""
+  const sort =
+    typeof searchParams.sort === "string" ? searchParams.sort : "popular"
+  const session = await auth()
 
   return (
     <section className="relative flex h-full flex-col min-h-[90vh] w-full py-10">
@@ -38,10 +42,10 @@ export default async function Tag({
           </div>
         </div>
         <div className="flex items-center justify-between w-full">
-          <SearchCategory />
+          <SearchCategory user={session?.user} sort={sort} />
           <SearchFilters />
         </div>
-        <SearchTimeline title={title ?? ""} />
+        <SearchTimeline title={title ?? ""} sort={sort} />
       </div>
     </section>
   )

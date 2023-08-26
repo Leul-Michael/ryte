@@ -3,11 +3,14 @@
 import { Input } from "@/components/ui/input"
 import { useSearch, useSetSearch } from "@/store/zustand"
 import { SearchIcon, X } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { FormEventHandler, useCallback, useEffect, useState } from "react"
 
 const Search = ({ search }: { search?: string }) => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const sort = searchParams.get("sort")
+
   const title = useSearch()
   const setTitle = useSetSearch()
   const [queryUpdated, setQueryUpdated] = useState(false)
@@ -21,10 +24,11 @@ const Search = ({ search }: { search?: string }) => {
 
   useEffect(() => {
     if (queryUpdated) {
+      if (sort) return router.push(`search?q=${title}&sort=${sort}`)
       router.push(`search?q=${title}`)
       setQueryUpdated(false)
     }
-  }, [queryUpdated, router, title])
+  }, [queryUpdated, router, title, sort])
 
   const onSearch: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()

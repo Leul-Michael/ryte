@@ -10,6 +10,35 @@ export async function GET(request: Request) {
   const title = url.searchParams.get("title") ?? ""
   const limit = url.searchParams.get("limit") ?? 10
   const cursor = url.searchParams.get("cursor") ?? ""
+  const sort = url.searchParams.get("sort") ?? ""
+
+  let sortByOption = {}
+  if (sort === "new") {
+    sortByOption = {
+      created_at: "desc",
+    }
+  } else if (sort === "following") {
+    sortByOption = {
+      user: {
+        follows: {
+          _count: "desc",
+        },
+      },
+    }
+  } else {
+    sortByOption = [
+      {
+        likes: {
+          _count: "desc",
+        },
+      },
+      {
+        comments: {
+          _count: "desc",
+        },
+      },
+    ]
+  }
 
   let data = []
 
@@ -53,9 +82,7 @@ export async function GET(request: Request) {
               },
         created_at: true,
       },
-      orderBy: {
-        title: "desc",
-      },
+      orderBy: sortByOption,
       take: Number(limit) + 1,
       cursor: cursor ? { id: cursor } : undefined,
     })

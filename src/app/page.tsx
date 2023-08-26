@@ -81,7 +81,7 @@ function UnAuthed() {
           asChild
           className="bg-accent-green self-start min-w-[150px] md:min-w-[250px] py-6 hover:bg-accent-green rounded-full focus:bg-accent-green text-black"
         >
-          <Link href="/auth/login">
+          <Link href="/search">
             <BookOpen className="mr-2 h-4 w-4" /> Read on Ryte
           </Link>
         </Button>

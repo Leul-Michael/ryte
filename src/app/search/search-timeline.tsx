@@ -10,9 +10,10 @@ import SearchStorySkeleton from "../../components/skeletons/search-story-skeleto
 
 type SearchTimelineProps = {
   title: string
+  sort?: string
 }
 
-const SearchTimeline = ({ title }: SearchTimelineProps) => {
+const SearchTimeline = ({ title, sort = "popular" }: SearchTimelineProps) => {
   const { data, isLoading, mutate, size, setSize, isValidating } =
     useSWRInfinite<{
       stories: (Story & {
@@ -23,9 +24,10 @@ const SearchTimeline = ({ title }: SearchTimelineProps) => {
       nextCursor: { id: String } | undefined
     }>((pageIndex, previousPageData) => {
       if (previousPageData && !previousPageData?.stories?.length) return null // reached the end
-      if (pageIndex === 0) return `/api/story/search?title=${title}`
+      if (pageIndex === 0)
+        return `/api/story/search?title=${title}&sort=${sort}`
 
-      return `/api/story/search?title=${title}&cursor=${previousPageData.nextCursor?.id}`
+      return `/api/story/search?title=${title}&sort=${sort}&cursor=${previousPageData.nextCursor?.id}`
     }, fetcher)
 
   const hasNextPage = useMemo(() => {
@@ -46,8 +48,8 @@ const SearchTimeline = ({ title }: SearchTimelineProps) => {
 
   if (isLoading) {
     content = (
-      <div className="grid grid-cols-layout-250 gap-8">
-        {[...Array(4).keys()].map((i) => (
+      <div className="grid grid-cols-layout-300 gap-8">
+        {[...Array(3).keys()].map((i) => (
           <SearchStorySkeleton key={i} />
         ))}
       </div>
@@ -63,7 +65,7 @@ const SearchTimeline = ({ title }: SearchTimelineProps) => {
   } else {
     content = (
       <>
-        <div className="w-full grid grid-cols-layout-250 gap-8 h-full">
+        <div className="w-full grid grid-cols-layout-300 gap-8 h-full">
           {data.map((v) =>
             v.stories.map((story, i) => {
               return (
@@ -75,10 +77,16 @@ const SearchTimeline = ({ title }: SearchTimelineProps) => {
               )
             })
           )}
-        </div>
-        <div className="w-full grid grid-cols-layout-250 gap-8 h-full">
           {!isLoading && isValidating
-            ? [...Array(4).keys()].map((i) => <SearchStorySkeleton key={i} />)
+            ? [
+                ...Array(
+                  data[0]?.stories?.length % 3 === 0
+                    ? 3
+                    : data[0]?.stories?.length % 2 === 0
+                    ? 2
+                    : 1
+                ).keys(),
+              ].map((i) => <SearchStorySkeleton key={i} />)
             : null}
         </div>
       </>
