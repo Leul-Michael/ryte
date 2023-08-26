@@ -70,7 +70,7 @@ const SearchStoryExcerpt = forwardRef(
               </span>
             </div>
           </div>
-          <h1 className="text-[1.1rem] leading-[1.1] font-semibold">
+          <h1 className="text-[1.1rem] leading-[1.1] font-medium">
             {story.title.length > 200
               ? story.title.slice(0, 200) + " ..."
               : story.title}
