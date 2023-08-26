@@ -55,7 +55,7 @@ const SearchStoryExcerpt = forwardRef(
           />
           <div className="md:group-hover:opacity-100 md:opacity-0 duration-300 absolute top-0 left-0 w-full h-full gradient-d p-5 flex items-end">
             <div className="grid grid-cols-[1fr_25px] items-center w-full">
-              <h1 className="text-[0.9rem] leading-[1.1] font-medium">
+              <h1 className="text-[0.9rem] leading-[1.1] font-semibold">
                 {story.title.length > 200
                   ? story.title.slice(0, 200) + " ..."
                   : story.title}
