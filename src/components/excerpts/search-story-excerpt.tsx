@@ -7,6 +7,7 @@ import { FistIcon } from "../buttons"
 import { formatNumber } from "@/lib/utils"
 import { Story, StoryImage, User } from "../../../types"
 import Link from "next/link"
+import { BookmarkPlus } from "lucide-react"
 
 const url = process.env.NEXT_PUBLIC_BASEURL
 
@@ -39,7 +40,7 @@ const SearchStoryExcerpt = forwardRef(
       <Link href={`/story/${story.slug}`} className="flex flex-col gap-2">
         <div
           ref={imageRef}
-          className="flex h-[250px] w-full border border-border/20 rounded-lg overflow-hidden"
+          className="group relative flex h-[250px] w-full border border-border/20 rounded-lg overflow-hidden"
         >
           <Image
             src={image}
@@ -52,6 +53,16 @@ const SearchStoryExcerpt = forwardRef(
               objectFit: "cover",
             }}
           />
+          <div className="md:group-hover:opacity-100 md:opacity-0 duration-300 absolute top-0 left-0 w-full h-full gradient-d p-5 flex items-end">
+            <div className="grid grid-cols-[1fr_25px] items-center w-full">
+              <h1 className="text-[0.9rem] leading-[1.1] font-medium">
+                {story.title.length > 200
+                  ? story.title.slice(0, 200) + " ..."
+                  : story.title}
+              </h1>
+              <BookmarkPlus size={20} className="min-w-4 w-4 h-4 ml-4" />
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center gap-4 flex-wrap">
@@ -70,11 +81,6 @@ const SearchStoryExcerpt = forwardRef(
               </span>
             </div>
           </div>
-          <h1 className="text-[0.9rem] leading-[1.1] font-medium">
-            {story.title.length > 200
-              ? story.title.slice(0, 200) + " ..."
-              : story.title}
-          </h1>
         </div>
       </Link>
     )
