@@ -33,7 +33,7 @@ const AuthForm = () => {
           <Button
             onClick={handleGoogleLogin}
             variant="outline"
-            className="py-6 text-muted-foreground w-full max-w-[400px]"
+            className="py-6 text-muted-foreground w-full max-w-full sm:max-w-[400px]"
           >
             <Image
               width={50}
@@ -50,7 +50,7 @@ const AuthForm = () => {
             onClick={handleGithubLogin}
             disabled
             variant="outline"
-            className="py-6 text-muted-foreground w-full max-w-[400px]"
+            className="py-6 text-muted-foreground w-full max-w-full sm:max-w-[400px]"
           >
             <Github className="h-4 w-4 mr-4" />
             Continue using Github

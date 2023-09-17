@@ -17,7 +17,7 @@ export default async function Login() {
   }
 
   return (
-    <section className="flex max-w-screen-lg mx-auto min-h-screen w-full items-center justify-center h-full gap-4">
+    <section className="flex max-w-screen-lg mx-auto min-h-screen w-full items-start sm:items-center justify-center h-full gap-4 sm:flex-row flex-col-reverse">
       <AuthForm />
       <SideBar />
     </section>

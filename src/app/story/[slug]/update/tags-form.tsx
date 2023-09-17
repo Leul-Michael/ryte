@@ -117,7 +117,7 @@ export function SelectTagsForm({
           alt: "",
           in_content: false,
         })
-        router.push("/profile/my_story")
+        router.push("/profile/story")
       } else {
         toast({
           title: res?.msg ?? "Someting went wrong, Try again!",

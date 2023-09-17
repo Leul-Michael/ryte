@@ -74,7 +74,7 @@ export async function saveStory({
       },
     })
 
-    revalidatePath("/")
+    revalidatePath("/profile/story")
     return {
       story,
       msg: `Story ${story.title} created successfully`,
@@ -154,10 +154,44 @@ export async function updateStory({
       },
     })
 
-    revalidatePath("/")
+    revalidatePath("/profile/story")
     return {
       success: true,
       msg: `Story ${story.title} updated successfully`,
+    }
+  } catch (e: any) {
+    console.log(e)
+  }
+}
+
+export async function deleteStory(id: string) {
+  const session = await getSession()
+  const userId = session?.user?.id as string
+
+  const currentstory = await prisma.story.findUnique({
+    where: {
+      id,
+    },
+  })
+
+  if (currentstory?.userId !== userId) {
+    return {
+      success: false,
+      msg: "You're not allowed to perform this action!",
+    }
+  }
+
+  try {
+    const story = await prisma.story.delete({
+      where: {
+        id,
+      },
+    })
+
+    revalidatePath("/profile/story")
+    return {
+      success: true,
+      msg: `Story ${story.title} deleted successfully`,
     }
   } catch (e: any) {
     console.log(e)

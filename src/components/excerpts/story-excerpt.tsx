@@ -12,6 +12,7 @@ import Timeago from "../timeago"
 import { Button } from "../ui/button"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import DeleteStoryButton from "../delete-story-button"
 
 interface StoryExcerptProps {
   story: Omit<Story, "content"> & {
@@ -56,6 +57,7 @@ const StoryExcerpt = forwardRef(
               >
                 <Link href={`/story/${story.slug}/update`}>Update</Link>
               </Button>
+              <DeleteStoryButton id={story.id} />
             </div>
           ) : null}
         </div>

@@ -100,8 +100,8 @@ model Story {
 model Like {
   userId    String
   storySlug String
-  user      User   @relation(fields: [userId], references: [id])
-  story     Story  @relation(fields: [storySlug], references: [slug])
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story     Story  @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
 
   @@id([userId, storySlug])
 }
@@ -112,8 +112,8 @@ model Comment {
   comment   String
   userId    String
   storySlug String
-  user      User   @relation(fields: [userId], references: [id])
-  story     Story  @relation(fields: [storySlug], references: [slug])
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story     Story  @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
 
   updated_at DateTime @updatedAt
   created_at DateTime @default(now())

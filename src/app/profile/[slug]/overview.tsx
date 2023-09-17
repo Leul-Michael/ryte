@@ -78,7 +78,7 @@ const Overview = ({ user }: OverviewProps) => {
               variant="outline"
               className="self-start rounded-full py-[0.3rem] px-4 text-xs h-auto"
             >
-              <Link href="/profile/my_story">View</Link>
+              <Link href="/profile/story">View</Link>
             </Button>
           </div>
           <p className="max-w-[600px]">{formatNumber(user.stories)}</p>

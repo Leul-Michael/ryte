@@ -109,7 +109,7 @@ export function SelectTagsForm({
           alt: "",
           in_content: false,
         })
-        redirect("/")
+        redirect("/profile/story")
       } else {
         toast({
           title: "Someting went wrong, Try again!",
