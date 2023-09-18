@@ -37,6 +37,7 @@ const Form = ({ story }: FormProps) => {
 
   const continueToAddTags: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
+    if (showImageModal) return
     if (!title && noContent)
       return toast({
         title: "Please add all required fields!",

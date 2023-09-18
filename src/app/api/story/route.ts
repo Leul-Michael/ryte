@@ -27,13 +27,22 @@ export async function GET(request: Request) {
 
       stories = await prisma.story.findMany({
         where: {
-          tags: {
-            some: {
-              id: {
-                in: [...tags.map((t) => t.id)],
+          OR: [
+            {
+              tags: {
+                some: {
+                  id: {
+                    in: [...tags.map((t) => t.id)],
+                  },
+                },
               },
             },
-          },
+            {
+              user: {
+                role: "ADMIN",
+              },
+            },
+          ],
         },
         include: {
           user: {
@@ -54,13 +63,22 @@ export async function GET(request: Request) {
     } else if (tag === "following") {
       stories = await prisma.story.findMany({
         where: {
-          user: {
-            followers: {
-              some: {
-                id: userId,
+          OR: [
+            {
+              user: {
+                followers: {
+                  some: {
+                    id: userId,
+                  },
+                },
               },
             },
-          },
+            {
+              user: {
+                role: "ADMIN",
+              },
+            },
+          ],
         },
         include: {
           user: true,
@@ -75,11 +93,20 @@ export async function GET(request: Request) {
     } else {
       stories = await prisma.story.findMany({
         where: {
-          tags: {
-            some: {
-              title: { contains: tag, mode: "insensitive" },
+          OR: [
+            {
+              tags: {
+                some: {
+                  title: { contains: tag, mode: "insensitive" },
+                },
+              },
             },
-          },
+            {
+              user: {
+                role: "ADMIN",
+              },
+            },
+          ],
         },
         include: {
           user: true,

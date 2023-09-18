@@ -25,8 +25,8 @@
   }
   
   .tiptap p {
-    @apply md:text-[1.2rem] text-base;
-    @apply md:leading-[1.7] leading-[1.5];
+    @apply md:text-[1.1rem] text-base;
+    @apply md:leading-[1.6] leading-[1.5];
   }
 
   :root {

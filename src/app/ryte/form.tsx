@@ -7,12 +7,14 @@ import { FormEventHandler, useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { SelectTagsForm } from "./tags-form"
 import { cn } from "@/lib/utils"
+import { useShowEditorImgModal } from "@/store/zustand"
 
 const Form = () => {
   const { toast } = useToast()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [showTagsModal, setShowTagModals] = useState(false)
+  const showImageModal = useShowEditorImgModal()
 
   const noContent =
     content.length <= 3 ||
@@ -22,6 +24,7 @@ const Form = () => {
 
   const continueToAddTags: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
+    if (showImageModal) return
     if (!title && noContent)
       return toast({
         title: "Please add all required fields!",
@@ -50,7 +53,7 @@ const Form = () => {
       <form onSubmit={continueToAddTags} className="flex flex-col pb-10">
         <Button
           type="submit"
-          disabled={!title || noContent}
+          disabled={!title || noContent || showImageModal}
           className={cn(
             "self-end px-8 relative bg-accent-green hover:bg-accent-green rounded-full focus:bg-accent-green text-black",
             showTagsModal ? "opacity-0" : "opacity-100"

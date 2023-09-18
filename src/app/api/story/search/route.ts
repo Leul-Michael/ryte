@@ -54,6 +54,11 @@ export async function GET(request: Request) {
               },
             },
           },
+          {
+            user: {
+              role: "ADMIN",
+            },
+          },
         ],
       },
       select: {
