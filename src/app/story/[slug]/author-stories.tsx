@@ -57,6 +57,9 @@ export default async function AuthorStories({
   authorId,
 }: AuthorStoriesProps) {
   const stories = await storiesByAuthor(storyId, authorId)
+
+  if (stories?.length <= 0) return null
+
   return (
     <div className="flex flex-col gap-8 my-8">
       <h1 className="text-2xl md:text-3xl font-serif font-semibold leading-[1.1]">

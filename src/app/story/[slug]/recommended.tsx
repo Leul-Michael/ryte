@@ -9,10 +9,16 @@ async function recommendedStories(
   const storyIds = await prisma.story.findMany({
     where: {
       NOT: {
-        user: {
-          id: authorId,
-        },
-        id: storyId,
+        OR: [
+          {
+            user: {
+              id: authorId,
+            },
+          },
+          {
+            id: storyId,
+          },
+        ],
       },
       tags: {
         some: {
