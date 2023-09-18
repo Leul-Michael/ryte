@@ -12,9 +12,10 @@ import StoryExcerpt from "./excerpts/story-excerpt"
 
 interface StoriesTimelineProps {
   tag: string
+  userId?: string
 }
 
-const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
+const StoriesTimeline = ({ tag, userId }: StoriesTimelineProps) => {
   const { data, isLoading, mutate, size, setSize, isValidating } =
     useSWRInfinite<{
       stories: Story[]
@@ -53,7 +54,12 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
   } else if (!data || data[0]?.stories?.length <= 0) {
     content = (
       <div className="flex flex-col gap-8">
-        {!tag ? (
+        {!userId ? (
+          <p className="text-sm max-w-[500px] w-full text-muted-foreground">
+            Create account and start following some tags to find stories in your
+            feed
+          </p>
+        ) : !tag ? (
           <p className="text-sm max-w-[500px] w-full text-muted-foreground">
             Start following some tags to find stories in your feed
           </p>
@@ -72,9 +78,13 @@ const StoriesTimeline = ({ tag }: StoriesTimelineProps) => {
           asChild
           className="min-w-[150px] self-start rounded-full"
         >
-          <Link href={tag === "following" ? "/user" : "/tag"}>
-            Find {tag === "following" ? "Users" : "Tags"}
-          </Link>
+          {!userId ? (
+            <Link href="/auth/login">Sign up</Link>
+          ) : (
+            <Link href={tag === "following" ? "/user" : "/tag"}>
+              Find {tag === "following" ? "Users" : "Tags"}
+            </Link>
+          )}
         </Button>
       </div>
     )

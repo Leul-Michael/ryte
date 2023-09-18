@@ -37,16 +37,23 @@ export default async function Home({
   const tag =
     typeof searchParams.tag === "string" ? searchParams.tag : undefined
   const session = await auth()
+  const userId = session?.user?.id as string
 
   return (
     <section className="flex h-full flex-col min-h-[90vh] w-full justify-center">
       <ForceRefresh />
-      {session?.user ? <Authed tag={tag} /> : <UnAuthed />}
+      {session?.user ? <Authed tag={tag} userId={userId} /> : <UnAuthed />}
     </section>
   )
 }
 
-async function Authed({ tag }: { tag: string | undefined }) {
+async function Authed({
+  tag,
+  userId,
+}: {
+  tag: string | undefined
+  userId?: string
+}) {
   const tags = await getFollowingTags()
   return (
     <div className="w-full h-full flex flex-col flex-1 py-12 gap-16 overflow-hidden">
@@ -61,7 +68,7 @@ async function Authed({ tag }: { tag: string | undefined }) {
       <Suspense fallback={<Skeleton className="w-full h-[20px] rounded-md" />}>
         <StoryTags tags={tags} search={tag ?? null} />
       </Suspense>
-      <StoriesTimeline tag={tag ?? ""} />
+      <StoriesTimeline tag={tag ?? ""} userId={userId} />
     </div>
   )
 }

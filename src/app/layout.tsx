@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { ThemeProvider } from "@/components/theme/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import RequireProfile from "@/components/profile/require-profile"
+import Footer from "@/components/footer"
 
 const inter = Inter({
   weight: ["400", "500", "600", "700", "800"],
@@ -69,6 +70,7 @@ export default function RootLayout({
           <main className="antialiased max-w-screen-xl mx-auto md:px-8 px-4 flex min-h-screen flex-col w-full">
             {children}
           </main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
