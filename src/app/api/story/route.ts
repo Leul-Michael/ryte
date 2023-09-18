@@ -50,6 +50,7 @@ export async function GET(request: Request) {
               id: true,
               name: true,
               image: true,
+              username: true,
             },
           },
           tags: true,
@@ -81,7 +82,14 @@ export async function GET(request: Request) {
           ],
         },
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+            },
+          },
           tags: true,
         },
         orderBy: {
@@ -109,7 +117,14 @@ export async function GET(request: Request) {
           ],
         },
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+            },
+          },
           tags: true,
         },
         orderBy: {
