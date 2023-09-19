@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
+import { User } from "@prisma/client"
 
 export async function GET(request: Request) {
   const session = await auth()
@@ -40,9 +41,18 @@ export async function GET(request: Request) {
     ]
   }
 
-  let data = []
+  let loggedUser: null | User = null,
+    data = []
 
   try {
+    if (userId) {
+      loggedUser = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      })
+    }
+
     data = await prisma.story.findMany({
       where: {
         OR: [
@@ -110,6 +120,12 @@ export async function GET(request: Request) {
         user: story.user,
         likes: story._count.likes,
         likedByMe: story.likes?.length > 0,
+        savedByMe:
+          loggedUser == null
+            ? false
+            : loggedUser.saved.includes(story.slug)
+            ? true
+            : false,
       }
     })
 

@@ -7,7 +7,7 @@ import { FistIcon } from "../buttons"
 import { formatNumber } from "@/lib/utils"
 import { Story, StoryImage, User } from "../../../types"
 import Link from "next/link"
-import { BookmarkPlus } from "lucide-react"
+import { Bookmark, BookmarkPlus } from "lucide-react"
 
 const url = process.env.NEXT_PUBLIC_BASEURL
 
@@ -16,6 +16,7 @@ type StoryExcerptProps = {
     likes: number
     likedByMe: boolean
     created_at: Date
+    savedByMe: boolean
   }
 }
 
@@ -60,7 +61,14 @@ const SearchStoryExcerpt = forwardRef(
                   ? story.title.slice(0, 200) + " ..."
                   : story.title}
               </h1>
-              <BookmarkPlus size={20} className="min-w-4 w-4 h-4 ml-4" />
+              {story.savedByMe ? (
+                <Bookmark
+                  size={20}
+                  className="min-w-4 w-4 h-4 ml-4 fill-muted-foreground"
+                />
+              ) : (
+                <BookmarkPlus size={20} className="min-w-4 w-4 h-4 ml-4" />
+              )}
             </div>
           </div>
         </div>

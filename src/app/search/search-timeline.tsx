@@ -19,6 +19,7 @@ const SearchTimeline = ({ title, sort = "popular" }: SearchTimelineProps) => {
       stories: (Story & {
         likes: number
         likedByMe: boolean
+        savedByMe: boolean
         created_at: Date
       })[]
       nextCursor: { id: String } | undefined
